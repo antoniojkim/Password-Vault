@@ -21,13 +21,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
@@ -36,7 +33,7 @@ import javax.swing.JTextField;
 *
 * @author Antonio's Laptop
 */
-public class Login extends JPanel implements MouseListener{
+public class Login extends GUI implements MouseListener{
     
     private List<String> paths = new ArrayList<>();
     private List<String> usernames = new ArrayList<>();
@@ -51,15 +48,15 @@ public class Login extends JPanel implements MouseListener{
     public Login(){
         setLayout(null);
         //setBackground(new Color(00, 66, 99));
-        add(p.JLabel(Main.w.getWidth()/2-p.stringWidth("Password Vault", p.font.calibri(p.getFontSizeSmall(40)))/2, p.convertYSmall(10), "Password Vault", p.getFontSizeSmall(40)));
-        add(p.JLabel(Main.w.getWidth()/2-p.stringWidth("by Antonio Kim", p.font.calibri(p.getFontSizeSmall(30)))/2, p.convertYSmall(50), "by Antonio Kim", p.getFontSizeSmall(30)));
+        add(JCenterLabel(Main.w.getWidth()/2, p.convertYSmall(10), "Password Vault", p.getFontSizeSmall(40)));
+        add(JLabel(Main.w.getWidth()/2-p.stringWidth("by Antonio Kim", p.font.calibri(p.getFontSizeSmall(30)))/2, p.convertYSmall(50), "by Antonio Kim", p.getFontSizeSmall(30)));
         int y = p.convertYSmall(110)-(p.convertYSmall(400)-Main.w.getHeight());
-        add(p.JLabel(Main.w.getWidth()/12, y, "Username:", p.getFontSizeSmall(25)));
-        username = p.JTextField(Main.w.getWidth()/9, y+p.convertYSmall(35), Main.w.getWidth()*(7.0/9.0), p.convertYSmall(30), "");
+        add(JLabel(Main.w.getWidth()/12, y, "Username:", p.getFontSizeSmall(25)));
+        username = JTextField(Main.w.getWidth()/9, y+p.convertYSmall(35), Main.w.getWidth()*(7.0/9.0), p.convertYSmall(30), "");
         username.setFont(p.font.calibri(p.getFontSizeSmall(20)));
         add(username);
-        add(p.JLabel(Main.w.getWidth()/12, y+p.convertYSmall(80), "Password:", p.getFontSizeSmall(25)));
-        password = p.JPasswordField(Main.w.getWidth()/9, y+p.convertYSmall(115), Main.w.getWidth()*(7.0/9.0), p.convertYSmall(30));
+        add(JLabel(Main.w.getWidth()/12, y+p.convertYSmall(80), "Password:", p.getFontSizeSmall(25)));
+        password = JPasswordField(Main.w.getWidth()/9, y+p.convertYSmall(115), Main.w.getWidth()*(7.0/9.0), p.convertYSmall(30));
         password.setFont(p.font.calibri(p.getFontSizeSmall(20)));
         username.addKeyListener(new KeyAdapter(){
             @Override
@@ -78,7 +75,7 @@ public class Login extends JPanel implements MouseListener{
             }
         });
         add(password);
-        JButton login = p.JButton(Main.w.getWidth()/3, y+p.convertYSmall(190), "Login", p.getFontSizeSmall(25));
+        JButton login = JButton(Main.w.getWidth()/3, y+p.convertYSmall(190), "Login", p.getFontSizeSmall(25));
         login.setLocation(Main.w.getWidth()/2-login.getWidth()/2, y+p.convertYSmall(190));
         readFiles();
         login.addActionListener((ActionEvent ae) -> {
@@ -141,26 +138,9 @@ public class Login extends JPanel implements MouseListener{
             Main.w.setVisible(true);
         }
         else{
-            p.JMessagePane("Could not find either the username\nor the password in the database", "Incorrect username or password", JOptionPane.ERROR_MESSAGE);
+            JMessagePane("Could not find either the username\nor the password in the database", "Incorrect username or password", JOptionPane.ERROR_MESSAGE);
             password.setText("");
         }
-    }
-    
-    public void addListeners(){
-        addMouseListener (this);
-        addMouseMotionListener(new MouseMotionAdapter(){
-            @Override
-            public void mouseMoved(MouseEvent me) {
-                int mx = me.getX(), my = me.getY();
-                if (mx > dotLocationX-p.convertXSmall(2) && mx < dotLocationX+p.convertXSmall(3)+dotDiameter && my > dotLocationY-p.convertYSmall(2) && my < dotLocationY+3*dotDiameter+p.convertXSmall(3)){
-                    hover = true;
-                }
-                else{
-                    hover = false;
-                }
-                repaint();
-            }
-        });
     }
     
     public boolean userExists(String username, String password){
@@ -176,7 +156,8 @@ public class Login extends JPanel implements MouseListener{
     public void readFiles(){
         File[] files = new File("./Vault Files").listFiles();
         for (int a = 0; a<files.length; a++){
-            if (!files[a].getName().equals("PDJ67O55lB95jRED7.txt") && readable(files[a].getPath())){
+            if (!files[a].getName().equals("PDJ67O55lB95jRED7.txt") && !files[a].getName().equals("$6oØvE[=XW;{µR.txt") &&
+                    readable(files[a].getPath())){
                 BufferedReader br = p.filereader(files[a].getPath());
                 try {
                     String line = br.readLine();
@@ -206,24 +187,43 @@ public class Login extends JPanel implements MouseListener{
             if (line != null && !line.equals("Failed to Decrypt")){
                 return true;
             }
-        } catch (IOException ex) {    }
+        } catch (IOException | NullPointerException ex) {    }
         return false;
     }
     
     
-    boolean hover = false;
-    int dotDiameter = p.getFontSizeSmall(7), dotLocationX = Main.w.getWidth()-p.convertXSmall(22), dotLocationY = p.convertYSmall(5), dotDistance = p.convertYSmall(9), arcWidth = p.getFontSizeSmall(5);
+    private boolean hover = false;
+    private int menuLocationX = Main.w.getWidth()-p.convertScreenX(30), menuLocationY = p.convertScreenY(12.5), 
+            menuWidth = p.convertScreenX(20), menuHeight = p.convertScreenY(20), arcWidth = p.getFontSize(5);
     @Override
     public void paintComponent (Graphics g){
         super.paintComponent(g);
         if (hover){
             g.setColor(Color.LIGHT_GRAY);
-            g.fillRoundRect(dotLocationX-p.convertXSmall(2), dotLocationY-p.convertYSmall(2), dotDiameter+p.convertXSmall(5), p.convertYSmall(30), arcWidth, arcWidth);
+            g.fillRoundRect(menuLocationX-p.convertX(2), menuLocationY-p.convertY(2), menuWidth, menuHeight, arcWidth, arcWidth);
         }
         g.setColor(Color.DARK_GRAY);
-        g.fillOval(dotLocationX, dotLocationY, dotDiameter, dotDiameter);
-        g.fillOval(dotLocationX, dotLocationY+dotDistance, dotDiameter, dotDiameter);
-        g.fillOval(dotLocationX, dotLocationY+2*dotDistance, dotDiameter, dotDiameter);
+        g.setFont(p.font.calibri(p.getFontSize(70)));
+        g.drawString("≡", menuLocationX, menuLocationY+menuHeight-p.convertScreenY(2));
+    }
+    
+    
+    public void addListeners(){
+        addMouseListener (this);
+        addMouseMotionListener(new MouseMotionAdapter(){
+            @Override
+            public void mouseMoved(MouseEvent me) {
+                int mx = me.getX(), my = me.getY();
+                if (mx > menuLocationX && mx < menuLocationX+menuWidth &&
+                        my > menuLocationY && my < menuLocationY+menuHeight){
+                    hover = true;
+                }
+                else{
+                    hover = false;
+                }
+                repaint();
+            }
+        });
     }
     
     @Override
@@ -232,8 +232,8 @@ public class Login extends JPanel implements MouseListener{
     @Override
     public void mousePressed(MouseEvent me) {
         int mx = me.getX(), my = me.getY();
-        if (mx > dotLocationX-p.convertXSmall(2) && mx < dotLocationX+p.convertXSmall(3)+dotDiameter && my > dotLocationY-p.convertYSmall(2) && my < dotLocationY+3*dotDiameter+2*dotDistance+p.convertXSmall(3)){
-            popup.show(this, dotLocationX-p.convertXSmall(130), dotLocationY+p.convertYSmall(10));
+        if (hover){
+            popup.show(this, menuLocationX-p.convertXSmall(130), menuLocationY+p.convertYSmall(10));
         }
     }
     

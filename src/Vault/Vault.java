@@ -5,7 +5,7 @@
 */
 package Vault;
 
-import Encryptor.Encryptor;
+import Main.GUI;
 import Main.Main;
 import Main.p;
 import java.awt.BasicStroke;
@@ -13,8 +13,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -32,26 +30,22 @@ import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.LineBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 /**
 *
 * @author Antonio's Laptop
 */
-public class Vault extends JPanel{
+public class Vault extends GUI{
     
     private String path = "";
     private String username = "", password = "";
-    private JTextField searchBar = p.JTextField(p.convertX(50), p.convertY(15), p.convertX(300), "");
+    private JTextField searchBar = JTextField(p.convertX(50), p.convertY(15), p.convertX(300), "");
     private String before = "";
     private boolean defaultShowFavourite = false;
     private boolean favouritesSelected = false, favouritesHovered = false,  allHovered = false, favouritesPressed = false, allPressed = false;
@@ -72,8 +66,8 @@ public class Vault extends JPanel{
     private static int index = -1;
     private JScrollPane pane;
     public void leftMenuSetup(){
-        searchBar.setBackground(p.defaultcolor);
-        searchBar.setBorder(p.border(0));
+        searchBar.setBackground(this.getBackground());
+        searchBar.setBorder(border(0));
         searchBar.setFont(p.font.calibri(p.getFontSize(25)));
         searchBar.setSize(searchBar.getWidth(), p.convertY(30));
         searchBar.addKeyListener(new KeyAdapter() {
@@ -93,11 +87,11 @@ public class Vault extends JPanel{
         pane = new JScrollPane();
         pane.setLocation(p.convertX(15), p.convertY(110));
         pane.setSize(p.convertX(330), Main.w.getHeight()-p.convertY(20)-pane.getY());
-        pane.setBorder(p.border(0));
+        pane.setBorder(border(0));
         add(pane);
         pane.setViewportView(entryList);
         entryList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        entryList.setBackground(p.defaultcolor);
+        entryList.setBackground(this.getBackground());
         entryList.setFont(p.font.calibri(p.getFontSize(30)));
         entryList.setModel(model);
         entryList.addMouseListener(new MouseAdapter(){
@@ -138,8 +132,8 @@ public class Vault extends JPanel{
         details.switchEntry(entries.get(index));
     }
     
-    JTextArea titleArea = p.JTextArea(p.convertX(380), p.convertY(75), p.convertX(300), p.convertY(40), p.getFontSize(35), false, false);
-    JScrollPane dataPane = p.JScrollPane(p.convertX(400), p.convertY(150), p.convertX(460), 100);
+    JTextArea titleArea = JTextArea(p.convertX(380), p.convertY(75), p.convertX(300), p.convertY(40), p.getFontSize(35), false, false);
+    JScrollPane dataPane = JScrollPane(p.convertX(400), p.convertY(150), p.convertX(460), 100);
     DetailsPane details = new DetailsPane();
     JPopupMenu popup = new JPopupMenu();
     JMenuItem item;
@@ -277,7 +271,7 @@ public class Vault extends JPanel{
                 }
                 else if (deleteButtonPressed){
                     deleteButtonPressed = false;
-                    int confirm = p.showConfirmDialog("Are you sure you want to delete this entry?", "Delete Entry?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
+                    int confirm = showConfirmDialog("Are you sure you want to delete this entry?", "Delete Entry?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
                     if (confirm == JOptionPane.OK_OPTION){
                         entries.remove(index);
                         updateModel();
@@ -496,7 +490,7 @@ public class Vault extends JPanel{
     }
     public void drawSearchBar(Graphics g){
         g.drawLine(p.convertX(50), p.convertY(45), p.convertX(340), p.convertY(45));
-        p.drawImage(g, Main.images.search, p.convertX(15), p.convertY(15), p.getImageScale(0.25));
+        drawImage(g, Main.images.search, p.convertX(15), p.convertY(15), p.getImageScale(0.25));
     }
     public void drawTabs(Graphics g){
         Graphics2D g2 = (Graphics2D)g;
@@ -547,7 +541,7 @@ public class Vault extends JPanel{
                 g.setColor(Color.WHITE);
             }
             else{
-                g.setColor(p.defaultcolor);
+                g.setColor(this.getBackground());
             }
             g.fillRoundRect(addButtonX-p.convertX(2), p.convertY(10), p.convertX(39), p.convertY(39), p.convertX(20), p.convertY(20));
             g.setColor(Color.BLACK);
@@ -555,20 +549,20 @@ public class Vault extends JPanel{
             g.drawString("Add", addButtonX+p.convertX(5), p.convertY(60));
             
         }
-        p.drawImage(g, Main.images.add, addButtonX, p.convertY(12), p.getImageScale(0.275));
+        drawImage(g, Main.images.add, addButtonX, p.convertY(12), p.getImageScale(0.275));
         if (optionsButtonHover){
             if (optionsButtonPressed){
                 g.setColor(Color.WHITE);
             }
             else{
-                g.setColor(p.defaultcolor);
+                g.setColor(this.getBackground());
             }
             g.fillRoundRect(optionsButtonX-p.convertX(2), p.convertY(10), p.convertX(39), p.convertY(39), p.convertX(20), p.convertY(20));
             g.setColor(Color.BLACK);
             g.setFont(p.font.calibri(p.getFontSize(15)));
             g.drawString("Options", optionsButtonX-p.convertX(5), p.convertY(60));
         }
-        p.drawImage(g, Main.images.options, optionsButtonX, p.convertY(12), p.getImageScale(0.275));
+        drawImage(g, Main.images.options, optionsButtonX, p.convertY(12), p.getImageScale(0.275));
     }
     int deleteButtonX = p.convertX(825), deleteButtonY = p.convertY(70), favouriteButtonX = p.convertX(785), favouriteButtonY = p.convertY(73),
             editButtonX = p.convertX(740), editButtonY = p.convertY(71), addFieldX = p.convertX(698), addFieldY = p.convertY(77);
@@ -619,21 +613,21 @@ public class Vault extends JPanel{
             g.setColor(Color.BLACK);
             g.drawString("Add", addFieldX, addFieldY+p.convertY(50));
         }
-        p.drawImage(g, Main.images.delete, deleteButtonX, deleteButtonY, p.getImageScale(0.95));
+        drawImage(g, Main.images.delete, deleteButtonX, deleteButtonY, p.getImageScale(0.95));
         if (entries.get(index).favourite == true){
-            p.drawImage(g, Main.images.favouriteSelected, favouriteButtonX, favouriteButtonY, p.getImageScale(0.3));
+            drawImage(g, Main.images.favouriteSelected, favouriteButtonX, favouriteButtonY, p.getImageScale(0.3));
         }
         else{
-            p.drawImage(g, Main.images.favouriteUnselected, favouriteButtonX, favouriteButtonY, p.getImageScale(0.3));
+            drawImage(g, Main.images.favouriteUnselected, favouriteButtonX, favouriteButtonY, p.getImageScale(0.3));
         }
         if (editting){
-            p.drawImage(g, Main.images.save, editButtonX+p.convertX(3), editButtonY+p.convertY(5), p.getImageScale(0.28));
+            drawImage(g, Main.images.save, editButtonX+p.convertX(3), editButtonY+p.convertY(5), p.getImageScale(0.28));
         }
         else{
-            p.drawImage(g, Main.images.edit, editButtonX, editButtonY, p.getImageScale(0.35));
+            drawImage(g, Main.images.edit, editButtonX, editButtonY, p.getImageScale(0.35));
         }
         if (editting){
-            p.drawImage(g, Main.images.addField, addFieldX, addFieldY, p.getImageScale(0.25));
+            drawImage(g, Main.images.addField, addFieldX, addFieldY, p.getImageScale(0.25));
         }
     }
     

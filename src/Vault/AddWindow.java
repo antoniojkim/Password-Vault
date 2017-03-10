@@ -5,10 +5,10 @@
 */
 package Vault;
 
+import Main.GUI;
 import Main.Main;
 import Main.p;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import javax.swing.JButton;
@@ -19,35 +19,37 @@ import javax.swing.JTextField;
 
 @author Antonio
 */
-public class AddWindow extends JFrame{
+public class AddWindow extends GUI{
     
     Entry entry;
     JButton ok;
     JButton cancel;
+    JFrame frame;
     
     public AddWindow (){ // adding standard means adding username and password
-        this.entry = entry;
-        setSize(p.convertScreenX(350), p.convertScreenY(135));
-        setLocationRelativeTo(Main.w);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setResizable(false);
-        setLayout(null);
-        setTitle("Add Entry");
+        frame = new JFrame();
+        frame.setSize(p.convertScreenX(350), p.convertScreenY(135));
+        frame.setLocationRelativeTo(Main.w);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setResizable(false);
+        frame.setLayout(null);
+        frame.setTitle("Add Entry");
         addEntry();
     }
     public AddWindow (Entry entry, boolean addingStandard){ // adding standard means adding username and password
         this.entry = entry;
-        setSize(p.convertScreenX(350), p.convertScreenY(200));
-        setLocationRelativeTo(Main.w);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setResizable(false);
-        setLayout(null);
+        frame = new JFrame();
+        frame.setSize(p.convertScreenX(350), p.convertScreenY(200));
+        frame.setLocationRelativeTo(Main.w);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setResizable(false);
+        frame.setLayout(null);
         if (addingStandard){
-            setTitle("Add Username and Password");
+            frame.setTitle("Add Username and Password");
             addStandard();
         }
         else{
-            setTitle("Add Field");
+            frame.setTitle("Add Field");
             addRegular();
         }
     }
@@ -56,8 +58,8 @@ public class AddWindow extends JFrame{
         if (Main.login.vault.editting == true){
             Main.login.vault.toggleEditting();
         }
-        add(p.JLabel(getWidth()/20, getHeight()/15, "Enter the name of the entry:", p.getFontSizeSmall(10)));
-        JTextField name = p.JTextField(getWidth()/15, getHeight()*4/15, (int)(getWidth()*9.0/10.0), getHeight()/5, "");
+        add(JLabel(frame.getWidth()/20, frame.getHeight()/15, "Enter the name of the entry:", p.getFontSizeSmall(10)));
+        JTextField name = JTextField(frame.getWidth()/15, frame.getHeight()*4/15, (int)(frame.getWidth()*9.0/10.0), frame.getHeight()/5, "");
         name.setFont(p.font.calibri(p.getFontSizeSmall(9)));
         name.setSize(name.getWidth(), (int)(1.25*p.stringHeight("Anything", name.getFont())));
         name.addKeyListener(new KeyAdapter(){
@@ -68,7 +70,7 @@ public class AddWindow extends JFrame{
                 }
             }
         });
-        add(name);
+        frame.add(name);
         addButtons();
         ok.addActionListener((ActionEvent) -> {
             addEntryAction(name.getText().trim());
@@ -83,18 +85,18 @@ public class AddWindow extends JFrame{
             Main.login.vault.titleArea.setText(nameText);
             Main.login.vault.updateModel();
             Main.login.vault.updateIndexDetails();
-            dispose();
+            frame.dispose();
         }
     }
     
     public void addStandard(){
-        add(p.JLabel(getWidth()/20, getHeight()/15, "Username:", p.getFontSizeSmall(10)));
-        JTextField username = p.JTextField(getWidth()/15, (int)(getHeight()*3/15), (int)(getWidth()*9.0/10.0), getHeight()/5, "");
+        add(JLabel(frame.getWidth()/20, frame.getHeight()/15, "Username:", p.getFontSizeSmall(10)));
+        JTextField username = JTextField(frame.getWidth()/15, (int)(frame.getHeight()*3/15), (int)(frame.getWidth()*9.0/10.0), frame.getHeight()/5, "");
         username.setFont(p.font.calibri(p.getFontSizeSmall(9)));
         username.setSize(username.getWidth(), (int)(1.25*p.stringHeight("Anything", username.getFont())));
         add(username);
-        add(p.JLabel(getWidth()/20, getHeight()*5.5/15, "Password:", p.getFontSizeSmall(10)));
-        JTextField password = p.JTextField(getWidth()/15, (int)(getHeight()*7.5/15), (int)(getWidth()*9.0/10.0), getHeight()/5, "");
+        add(JLabel(frame.getWidth()/20, frame.getHeight()*5.5/15, "Password:", p.getFontSizeSmall(10)));
+        JTextField password = JTextField(frame.getWidth()/15, (int)(frame.getHeight()*7.5/15), (int)(frame.getWidth()*9.0/10.0), frame.getHeight()/5, "");
         password.setFont(p.font.calibri(p.getFontSizeSmall(9)));
         password.setSize(password.getWidth(), (int)(1.25*p.stringHeight("Anything", password.getFont())));
         add(password);
@@ -119,20 +121,20 @@ public class AddWindow extends JFrame{
             entry.add("Username:", username);
             entry.add("Password:", password);
             Main.login.vault.print();
-//            Main.login.vault.updateModel();
+            //            Main.login.vault.updateModel();
             Main.login.vault.updateIndexDetails();
-            dispose();
+            frame.dispose();
         }
     }
     
     public void addRegular(){
-        add(p.JLabel(getWidth()/20, getHeight()/15, "Field Title:", p.getFontSizeSmall(10)));
-        JTextField username = p.JTextField(getWidth()/15, (int)(getHeight()*3/15), (int)(getWidth()*9.0/10.0), getHeight()/5, "");
+        add(JLabel(frame.getWidth()/20, frame.getHeight()/15, "Field Title:", p.getFontSizeSmall(10)));
+        JTextField username = JTextField(frame.getWidth()/15, (int)(frame.getHeight()*3/15), (int)(frame.getWidth()*9.0/10.0), frame.getHeight()/5, "");
         username.setFont(p.font.calibri(p.getFontSizeSmall(9)));
         username.setSize(username.getWidth(), (int)(1.25*p.stringHeight("Anything", username.getFont())));
         add(username);
-        add(p.JLabel(getWidth()/20, getHeight()*5.5/15, "Field Data:", p.getFontSizeSmall(10)));
-        JTextField password = p.JTextField(getWidth()/15, (int)(getHeight()*7.5/15), (int)(getWidth()*9.0/10.0), getHeight()/5, "");
+        add(JLabel(frame.getWidth()/20, frame.getHeight()*5.5/15, "Field Data:", p.getFontSizeSmall(10)));
+        JTextField password = JTextField(frame.getWidth()/15, (int)(frame.getHeight()*7.5/15), (int)(frame.getWidth()*9.0/10.0), frame.getHeight()/5, "");
         password.setFont(p.font.calibri(p.getFontSizeSmall(9)));
         password.setSize(password.getWidth(), (int)(1.25*p.stringHeight("Anything", password.getFont())));
         add(password);
@@ -161,32 +163,32 @@ public class AddWindow extends JFrame{
             entry.add(title.getText().trim(), data.getText().trim());
             Main.login.vault.print();
 //            Main.login.vault.updateModel();
-            Main.login.vault.updateIndexDetails();
-            if (another){
-                title.setText("");
-                data.setText("");
-                title.requestFocus();
-            }
-            else{
-                dispose();
-            }
+Main.login.vault.updateIndexDetails();
+if (another){
+    title.setText("");
+    data.setText("");
+    title.requestFocus();
+}
+else{
+    frame.dispose();
+}
         }
     }
     
     public void addButtons(){
         int fontSize = p.getFontSizeSmall(10);
         int width = (int)(1.25*p.stringWidth("Cancel", p.font.calibri(fontSize)));
-        double spacing = (getWidth()-2*width-getWidth()/15.0)/2.0;
-        ok = p.JButton(100, 100, "Ok", fontSize);
+        double spacing = (frame.getWidth()-2*width-frame.getWidth()/15.0)/2.0;
+        ok = JButton(100, 100, "Ok", fontSize);
         ok.setSize(width, ok.getHeight());
-        ok.setLocation((int)spacing, getHeight()-(int)(2*ok.getHeight()));
+        ok.setLocation((int)spacing, frame.getHeight()-(int)(2*ok.getHeight()));
         add(ok);
-        cancel = p.JButton(100, 100, "Cancel", fontSize);
+        cancel = JButton(100, 100, "Cancel", fontSize);
         cancel.setSize(width, cancel.getHeight());
-        cancel.setLocation((int)(spacing+width+getWidth()/15.0), getHeight()-(int)(2*cancel.getHeight()));
+        cancel.setLocation((int)(spacing+width+frame.getWidth()/15.0), frame.getHeight()-(int)(2*cancel.getHeight()));
         add(cancel);
         cancel.addActionListener((ActionEvent e) -> {
-            dispose();
+            frame.dispose();
         });
     }
     

@@ -7,6 +7,9 @@ package Encryptor;
 
 import Main.p;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -21,15 +24,10 @@ import java.util.List;
 public final class Encryptor {
     
     public Encryptor(){
-        open();
-//        for (int a = 0; a<normalCharacters.length; a++){
-//            System.out.print(normalCharacters[a]+" ");
-//        }
-//        System.out.println("");
-//        for (int a = 0; a<specialCharacters.length; a++){
-//            System.out.print(specialCharacters[a]+" ");
-//        }
-//        System.out.println("");
+        open(true);
+    }
+    public Encryptor(boolean extra){
+        open(extra);
     }
     
     private boolean opened = false;
@@ -39,9 +37,19 @@ public final class Encryptor {
     
     private String[][] cipher;
     
-    private void open(){
+    private BufferedReader br;
+    private void open(boolean extra){
         if (!opened){
-            BufferedReader br = new BufferedReader (new InputStreamReader(getClass().getResourceAsStream("keys.txt")));
+            if (extra){
+                try{
+                    br = new BufferedReader (new FileReader("./Vault Files/$6oØvE[=XW;{µR.txt"));
+                }catch(FileNotFoundException e){
+                    br = new BufferedReader (new InputStreamReader(getClass().getResourceAsStream("keys.txt")));
+                }
+            }
+            else{
+                br = new BufferedReader (new InputStreamReader(getClass().getResourceAsStream("keys.txt")));
+            }
             List<Thread> threads = new ArrayList<>();
             try{
                 List<String> lines = new ArrayList<>();
@@ -131,7 +139,7 @@ public final class Encryptor {
     
     private String getAdvancedEncryption(String str){
         if (!opened){
-            open();
+            open(true);
         }
         if (opened){
             if (str.equals("")){
@@ -209,7 +217,7 @@ public final class Encryptor {
     
     private String getDecryption (String str){
         if (!opened){
-            open();
+            open(true);
         }
         if (opened){
             if (str.equals("")){
@@ -274,11 +282,128 @@ public final class Encryptor {
         return encrypted;
     }
     
+    public void reset(){
+        changeKeys();
+    }
+    private void changeKeys(){
+        File file = new File("./Vault Files/$6oØvE[=XW;{µR.txt");
+        boolean backup = !file.exists();
+        Encryptor encryptorOld = new Encryptor(false);
+        PrintWriter pr = p.printwriter("./Vault Files/$6oØvE[=XW;{µR.txt");
+        for (int a = 0; a<normalCharacters.length; a++){
+            pr.print(normalCharacters[a]+createSalt());
+        }
+        pr.println();
+        for (int a = 0; a<specialCharacters.length; a++){
+            pr.print(specialCharacters[a]+createSalt());
+        }
+        int length = 0;
+        if (!specialCharacters[specialCharacters.length-1].equals("'")){
+            pr.print("'"+createSalt());
+            length = normalCharacters.length+specialCharacters.length+1;
+        }
+        else{
+            length = normalCharacters.length+specialCharacters.length;
+        }
+        pr.println();
+        List<String> list = new ArrayList<>();
+        for (int a = 0; a<length; a++){
+            list.addAll(Arrays.asList(normalCharacters));
+            list.addAll(Arrays.asList(specialCharacters));
+            if (!specialCharacters[specialCharacters.length-1].equals("'")){
+                list.add("'");
+            }
+            while(!list.isEmpty()){
+                int r = p.randomint(0, list.size()-1);
+                pr.print(list.get(r)+createSalt());
+                list.remove(r);
+            }
+            pr.println();
+        }
+        pr.close();
+        Encryptor encryptorNew = new Encryptor();
+        file = new File("./Vault Files");
+        String[] fileList = file.list();
+        for (int a = 0; a<fileList.length; a++){
+            if (fileList[a].endsWith(".txt") && !fileList[a].equals("$6oØvE[=XW;{µR.txt")){
+                try{
+                    BufferedReader br = p.filereader("./Vault Files/"+fileList[a]);
+                    String data = br.readLine();
+                    br.close();
+                    if (backup){
+                        file = new File("./Vault Files/Backup/");
+                        file.mkdirs();
+                        PrintWriter pr1 = p.printwriter("./Vault Files/Backup/"+fileList[a].substring(0, fileList[a].length()-4)+"RqfSFfpZlv8F.txt");
+                        pr1.println(data);
+                        pr1.close();
+                    }
+                    data = encryptorOld.decrypt(data);
+                    data = encryptorNew.encrypt(data);
+                    PrintWriter pr2 = p.printwriter("./Vault Files/"+fileList[a]);
+                    pr2.println(data);
+                    pr2.close();
+                }catch(IOException e){}
+            }
+        }
+    }
+    private String createSalt(){
+        String salt = "";
+        for (int a = 0; a<3; a++){
+            if (Math.random() > 0.5){
+                salt += specialCharacters[p.randomint(0, specialCharacters.length-1)];
+            }
+            else{
+                salt += normalCharacters[p.randomint(0, normalCharacters.length-1)];
+            }
+        }
+        return salt;
+    }
+    
+    public void resetDefault(){
+        File file = new File("./Vault Files/$6oØvE[=XW;{µR.txt");
+        if (file.exists()){
+            Encryptor encrypt = new Encryptor();
+            Encryptor encryptdef = new Encryptor(false);
+            String[] files = new File("./Vault Files").list();
+            for (int a = 0; a<files.length; a++){
+                if (files[a].endsWith(".txt") && !files[a].equals("$6oØvE[=XW;{µR.txt")){
+                    try{
+                        BufferedReader br = p.filereader("./Vault Files/"+files[a]);
+                        String data = br.readLine();
+                        data = encrypt.decrypt(data);
+                        data = encryptdef.encrypt(data);
+                        PrintWriter pr = p.printwriter("./Vault Files/"+files[a]);
+                        pr.println(data);
+                        pr.close();
+                    }catch(IOException e){}
+                }
+            }
+            file.delete();
+        }
+        else{
+            file = new File("./Vault Files/Backup/");
+            if (file.isDirectory()){
+                File[] files = file.listFiles();
+                for (int a = 0; a<files.length; a++){
+                    if (!files[a].getName().equals("$6oØvE[=XW;{µR.txt")){
+                        try{
+                            BufferedReader br = p.filereader("./Vault Files/Backup/"+files[a].getName());
+                            String data = br.readLine();
+                            PrintWriter pr = p.printwriter("./Vault Files/"+files[a].getName().replaceAll("RqfSFfpZlv8F", ""));
+                            pr.println(data);
+                            pr.close();
+                        }catch(IOException e){}
+                    }
+                }
+            }
+        }
+    }
+    
     /*
     public static void main (String[] args){
-    Encryptor encryptor = new Encryptor();
-    System.out.println(encryptor.createFilename("antoniok"));
-    System.out.println(encryptor.createFilename("settings"));
+        Encryptor encrypt = new Encryptor();
+        encrypt.reset();
+//        encrypt.resetDefault();
     }
     /*
     */

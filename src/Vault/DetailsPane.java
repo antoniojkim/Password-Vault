@@ -5,6 +5,7 @@
 */
 package Vault;
 
+import Main.GUI;
 import Main.p;
 import Main.Main;
 import java.awt.Color;
@@ -35,7 +36,7 @@ import javax.swing.event.MouseInputAdapter;
 *
 * @author Antonio's Laptop
 */
-public class DetailsPane extends JPanel implements KeyListener{
+public class DetailsPane extends GUI implements KeyListener{
     
     boolean editting = false;
     Entry entry = new Entry("");
@@ -104,7 +105,7 @@ public class DetailsPane extends JPanel implements KeyListener{
             }
             setPreferredSize(new Dimension(Math.max(highest, getWidth())+p.convertX(5), p.convertY(30)+entry.size()*p.convertY(90)));
             for (int a = 0; a<entry.size(); a++){
-                titles.add(p.JTextArea(p.convertX(10), p.convertY(5)+a*p.convertY(90), p.convertX(395), p.convertY(30), p.getFontSize(25), editting, false));
+                titles.add(JTextArea(p.convertX(10), p.convertY(5)+a*p.convertY(90), p.convertX(395), p.convertY(30), p.getFontSize(25), editting, false));
                 titles.get(a).setText(entry.fieldTitles.get(a));
                 titles.get(a).setSize(Math.max((int)(1.15*p.stringWidth(titles.get(a).getText(), titles.get(a).getFont())), p.convertX(395)), titles.get(a).getHeight());
                 if (titles.get(a).getWidth() > highest){
@@ -112,7 +113,7 @@ public class DetailsPane extends JPanel implements KeyListener{
                 }
                 add(titles.get(a));
                 titles.get(a).addKeyListener(this);
-                data.add(p.JPasswordField(p.convertX(40), p.convertY(40)+a*p.convertY(90), p.convertX(395), p.convertY(30), p.getFontSize(25), editting, false));
+                data.add(JPasswordField(p.convertX(40), p.convertY(40)+a*p.convertY(90), p.convertX(395), p.convertY(30), p.getFontSize(25), editting, false));
                 data.get(a).setText(entry.fieldData.get(a));
                 data.get(a).setSize(Math.max((int)(1.15*p.stringWidth(data.get(a).getText(), data.get(a).getFont())), p.convertX(395)), data.get(a).getHeight());
                 if (data.get(a).getWidth() > highest){
@@ -192,7 +193,7 @@ public class DetailsPane extends JPanel implements KeyListener{
                     }
                     g.fillRoundRect(p.convertX(408), p.convertY(3)+a*p.convertY(90), p.convertX(34), p.convertY(35), p.getFontSize(20), p.getFontSize(20));
                 }
-                p.drawImage(g, Main.images.remove, p.convertX(405), a*p.convertY(90), p.getImageScale(0.32));
+                drawImage(g, Main.images.remove, p.convertX(405), a*p.convertY(90), p.getImageScale(0.32));
             }
         }
     }

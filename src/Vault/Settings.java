@@ -5,6 +5,7 @@
 */
 package Vault;
 
+import Main.GUI;
 import Main.Main;
 import Main.Window;
 import Main.p;
@@ -18,39 +19,34 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.PrintWriter;
 import java.util.Timer;
 import java.util.TimerTask;
-import javax.swing.JCheckBox;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.WindowConstants;
 
 /**
 
 @author Antonio
 */
-public class Settings extends JPanel{
+public class Settings extends GUI{
     
     private Vault vault;
     private Window w;
-    private Button defaultFavourite, defaultUsername;
+    private Button defaultFavourite, defaultUsername, resetKey, defaultKey;
     
     
     /*
     public static void main (String[] args){
-    String path = "./Vault Files/asdf.txt";
-    if (!new File(path).exists()){
-    PrintWriter pr = p.printwriter(path);
-    pr.print(Main.encrpytor.encrypt("asdf$p1l7password$p1l7false$p1l70$p1l7"));
-    pr.close();
-    }
-    new Settings(new Vault(path)).Open();
+        String path = "./Vault Files/asdf.txt";
+        if (!new File(path).exists()){
+            PrintWriter pr = p.printwriter(path);
+            pr.print(Main.encrpytor.encrypt("asdf$p1l7password$p1l7false$p1l70$p1l7"));
+            pr.close();
+        }
+        new Settings(new Vault(path)).Open();
     }
     /*
     */
@@ -60,7 +56,7 @@ public class Settings extends JPanel{
     }
     
     public void Open(){
-        w = new Window("Password Vault by Antonio Kim - Settings", 500, 400);
+        w = new Window("Password Vault by Antonio Kim - Settings", 500, 500);
         w.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(null);
         addContent();
@@ -72,10 +68,10 @@ public class Settings extends JPanel{
         int fontSize40 = (int)(w.getWindowDiagonal()/(1140.175425099138/40));
         int fontSize45 = (int)(w.getWindowDiagonal()/(1140.175425099138/45));
         int fontSize60 = (int)(w.getWindowDiagonal()/(1140.175425099138/60));
-        add(p.JLabel(w.getWidth()/2-p.stringWidth("Settings", p.font.calibri(fontSize60))/2, p.convertScreenY(5), "Settings", fontSize60));
-        add(p.JLabel(p.convertScreenX(20), p.convertScreenY(70), "Username:     "+vault.getUsername(),fontSize45));
-        add(p.JLabel(p.convertScreenX(20), p.convertScreenY(120), "Password:", fontSize45));
-        JPasswordField field = p.JPasswordField(p.convertScreenX(141), p.convertScreenY(125), p.convertScreenX(200), p.convertScreenY(20), fontSize45, false, false);
+        add(JLabel(w.getWidth()/2-p.stringWidth("Settings", p.font.calibri(fontSize60))/2, p.convertScreenY(5), "Settings", fontSize60));
+        add(JLabel(p.convertScreenX(20), p.convertScreenY(70), "Username:     "+vault.getUsername(),fontSize45));
+        add(JLabel(p.convertScreenX(20), p.convertScreenY(120), "Password:", fontSize45));
+        JPasswordField field = JPasswordField(p.convertScreenX(141), p.convertScreenY(125), p.convertScreenX(200), p.convertScreenY(20), fontSize45, false, false);
         field.setText(vault.getPasssword());
         field.addMouseListener(new MouseAdapter() {
             @Override
@@ -89,9 +85,9 @@ public class Settings extends JPanel{
         });
         add(field);
         
-        add(p.JLabel(p.convertScreenX(50), p.convertScreenY(165), "New Password:", fontSize40));
-        add(p.JLabel(p.convertScreenX(238), p.convertScreenY(166), "_____________________", fontSize40));
-        JPasswordField newPassword = p.JPasswordField(p.convertScreenX(240), p.convertScreenY(166), p.convertScreenX(200), p.convertScreenY(20), fontSize45, true, true);
+        add(JLabel(p.convertScreenX(50), p.convertScreenY(165), "New Password:", fontSize40));
+        add(JLabel(p.convertScreenX(238), p.convertScreenY(166), "_____________________", fontSize40));
+        JPasswordField newPassword = JPasswordField(p.convertScreenX(240), p.convertScreenY(166), p.convertScreenX(200), p.convertScreenY(20), fontSize45, true, true);
         newPassword.setText("");
         newPassword.addMouseListener(new MouseAdapter() {
             @Override
@@ -104,9 +100,9 @@ public class Settings extends JPanel{
             }
         });
         add(newPassword);
-        add(p.JLabel(p.convertScreenX(50), p.convertScreenY(205), "Confirm Password:", fontSize40));
-        add(p.JLabel(p.convertScreenX(238), p.convertScreenY(206), "_____________________", fontSize40));
-        JPasswordField confirmPassword = p.JPasswordField(p.convertScreenX(240), p.convertScreenY(206), p.convertScreenX(200), p.convertScreenY(20), fontSize45, true, true);
+        add(JLabel(p.convertScreenX(50), p.convertScreenY(205), "Confirm Password:", fontSize40));
+        add(JLabel(p.convertScreenX(238), p.convertScreenY(206), "_____________________", fontSize40));
+        JPasswordField confirmPassword = JPasswordField(p.convertScreenX(240), p.convertScreenY(206), p.convertScreenX(200), p.convertScreenY(20), fontSize45, true, true);
         confirmPassword.setText("");
         confirmPassword.addMouseListener(new MouseAdapter() {
             @Override
@@ -119,7 +115,7 @@ public class Settings extends JPanel{
             }
         });
         add(confirmPassword);
-        JTextArea instructions = p.JTextArea(p.convertScreenX(240), p.convertScreenY(240), p.convertScreenX(300), p.convertScreenY(20), fontSize40, true, false);
+        JTextArea instructions = JTextArea(p.convertScreenX(240), p.convertScreenY(240), p.convertScreenX(300), p.convertScreenY(20), fontSize40, true, false);
         instructions.setText("");
         add(instructions);
         KeyAdapter key = new KeyAdapter() {
@@ -164,6 +160,8 @@ public class Settings extends JPanel{
             defaultFavourite.setText("Unset Favourite as Default Tab");
         }
         defaultUsername = new Button(20, 340, 20, "Set this User as Default User", 40);
+        resetKey = new Button(20, 385, 20, "Reset Encryption Key", 40);
+        defaultKey = new Button(20, 430, 20, "Revert to Default Encryption Key", 40);
         repaint();
         addMouseListener(new MouseAdapter() {
             @Override
@@ -171,6 +169,8 @@ public class Settings extends JPanel{
                 int mx = me.getX(), my = me.getY();
                 defaultFavourite.press(mx, my);
                 defaultUsername.press(mx, my);
+                resetKey.press(mx, my);
+                defaultKey.press(mx, my);
                 repaint();
             }
             @Override
@@ -194,6 +194,14 @@ public class Settings extends JPanel{
                     pr.close();
                     defaultUsername.release();
                 }
+                else if (resetKey.isPressed()){
+                    Main.encrpytor.reset();
+                    resetKey.release();
+                }
+                else if (defaultKey.isPressed()){
+                    Main.encrpytor.resetDefault();
+                    defaultKey.release();
+                }
                 repaint();
             }
         });
@@ -203,6 +211,9 @@ public class Settings extends JPanel{
                 int mx = me.getX(), my = me.getY();
                 defaultFavourite.hover(mx, my);
                 defaultUsername.hover(mx, my);
+                resetKey.hover(mx, my);
+                defaultKey.hover(mx, my);
+                repaint();
             }
         });
     }
@@ -215,6 +226,12 @@ public class Settings extends JPanel{
         }
         if (defaultUsername != null){
             defaultUsername.draw(g);
+        }
+        if (resetKey != null){
+            resetKey.draw(g);
+        }
+        if (defaultKey != null){
+            defaultKey.draw(g);
         }
     }
     
@@ -243,15 +260,16 @@ public class Settings extends JPanel{
             this.height = (int)Math.max(p.convertScreenY(height), p.stringHeight(text, font))+p.convertScreenY(5);
         }
         
-        public void hover(int mx, int my){
+        public boolean hover(int mx, int my){
             if (visible){
-                if (!hovering && mx > x && mx < x+width && my > y && my < y+height){
+                if (mx > x && mx < x+width && my > y && my < y+height){
                     hovering = true;
                 }
                 else{
                     hovering = false;
                 }
             }
+            return hovering;
         }
         public void press(int mx, int my){
             if (visible){
