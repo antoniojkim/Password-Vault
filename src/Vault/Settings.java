@@ -68,10 +68,10 @@ public class Settings extends GUI{
         int fontSize40 = (int)(w.getWindowDiagonal()/(1140.175425099138/40));
         int fontSize45 = (int)(w.getWindowDiagonal()/(1140.175425099138/45));
         int fontSize60 = (int)(w.getWindowDiagonal()/(1140.175425099138/60));
-        add(JLabel(w.getWidth()/2-p.stringWidth("Settings", p.font.calibri(fontSize60))/2, p.convertScreenY(5), "Settings", fontSize60));
-        add(JLabel(p.convertScreenX(20), p.convertScreenY(70), "Username:     "+vault.getUsername(),fontSize45));
-        add(JLabel(p.convertScreenX(20), p.convertScreenY(120), "Password:", fontSize45));
-        JPasswordField field = JPasswordField(p.convertScreenX(141), p.convertScreenY(125), p.convertScreenX(200), p.convertScreenY(20), fontSize45, false, false);
+        add(JLabel(w.getWidth()/2-p.stringWidth("Settings", p.font.calibri(fontSize60))/2, w.convertScreenY(5), "Settings", fontSize60));
+        add(JLabel(w.convertScreenX(20), w.convertScreenY(70), "Username:     "+vault.getUsername(),fontSize45));
+        add(JLabel(w.convertScreenX(20), w.convertScreenY(120), "Password:", fontSize45));
+        JPasswordField field = JPasswordField(w.convertScreenX(141), w.convertScreenY(125), w.convertScreenX(200), w.convertScreenY(20), fontSize45, false, false);
         field.setText(vault.getPasssword());
         field.addMouseListener(new MouseAdapter() {
             @Override
@@ -85,9 +85,9 @@ public class Settings extends GUI{
         });
         add(field);
         
-        add(JLabel(p.convertScreenX(50), p.convertScreenY(165), "New Password:", fontSize40));
-        add(JLabel(p.convertScreenX(238), p.convertScreenY(166), "_____________________", fontSize40));
-        JPasswordField newPassword = JPasswordField(p.convertScreenX(240), p.convertScreenY(166), p.convertScreenX(200), p.convertScreenY(20), fontSize45, true, true);
+        add(JLabel(w.convertScreenX(50), w.convertScreenY(165), "New Password:", fontSize40));
+        add(JLabel(w.convertScreenX(238), w.convertScreenY(166), "_____________________", fontSize40));
+        JPasswordField newPassword = JPasswordField(w.convertScreenX(240), w.convertScreenY(166), w.convertScreenX(200), w.convertScreenY(20), fontSize45, true, true);
         newPassword.setText("");
         newPassword.addMouseListener(new MouseAdapter() {
             @Override
@@ -100,9 +100,9 @@ public class Settings extends GUI{
             }
         });
         add(newPassword);
-        add(JLabel(p.convertScreenX(50), p.convertScreenY(205), "Confirm Password:", fontSize40));
-        add(JLabel(p.convertScreenX(238), p.convertScreenY(206), "_____________________", fontSize40));
-        JPasswordField confirmPassword = JPasswordField(p.convertScreenX(240), p.convertScreenY(206), p.convertScreenX(200), p.convertScreenY(20), fontSize45, true, true);
+        add(JLabel(w.convertScreenX(50), w.convertScreenY(205), "Confirm Password:", fontSize40));
+        add(JLabel(w.convertScreenX(238), w.convertScreenY(206), "_____________________", fontSize40));
+        JPasswordField confirmPassword = JPasswordField(w.convertScreenX(240), w.convertScreenY(206), w.convertScreenX(200), w.convertScreenY(20), fontSize45, true, true);
         confirmPassword.setText("");
         confirmPassword.addMouseListener(new MouseAdapter() {
             @Override
@@ -115,7 +115,7 @@ public class Settings extends GUI{
             }
         });
         add(confirmPassword);
-        JTextArea instructions = JTextArea(p.convertScreenX(240), p.convertScreenY(240), p.convertScreenX(300), p.convertScreenY(20), fontSize40, true, false);
+        JTextArea instructions = JTextArea(w.convertScreenX(240), w.convertScreenY(240), w.convertScreenX(300), w.convertScreenY(20), fontSize40, true, false);
         instructions.setText("");
         add(instructions);
         KeyAdapter key = new KeyAdapter() {
@@ -244,20 +244,20 @@ public class Settings extends GUI{
         private boolean visible = true;
         
         public Button(double x, double y, double height, String text, double fontSize){
-            this.x = p.convertScreenX(x);
-            this.y = p.convertScreenY(y);
+            this.x = w.convertScreenX(x);
+            this.y = w.convertScreenY(y);
             font = p.font.calibri((int)(w.getWindowDiagonal()/(1140.175425099138/fontSize)));
             this.text = text;
-            this.width = (int)Math.max(w.getWidth()*9/10, p.stringWidth(text, font))+p.convertScreenX(10);
-            this.height = (int)Math.max(p.convertScreenY(height), p.stringHeight(text, font))+p.convertScreenY(5);
+            this.width = (int)Math.max(w.getWidth()*9/10, p.stringWidth(text, font))+w.convertScreenX(10);
+            this.height = (int)Math.max(w.convertScreenY(height), p.stringHeight(text, font))+w.convertScreenY(5);
         }
         public Button(double x, double y, double width, double height, String text, double fontSize){
-            this.x = p.convertScreenX(x);
-            this.y = p.convertScreenY(y);
+            this.x = w.convertScreenX(x);
+            this.y = w.convertScreenY(y);
             font = p.font.calibri((int)(w.getWindowDiagonal()/(1140.175425099138/fontSize)));
             this.text = text;
-            this.width = (int)Math.max(p.convertScreenX(width), p.stringWidth(text, font))+p.convertScreenX(10);
-            this.height = (int)Math.max(p.convertScreenY(height), p.stringHeight(text, font))+p.convertScreenY(5);
+            this.width = (int)Math.max(w.convertScreenX(width), p.stringWidth(text, font))+w.convertScreenX(10);
+            this.height = (int)Math.max(w.convertScreenY(height), p.stringHeight(text, font))+w.convertScreenY(5);
         }
         
         public boolean hover(int mx, int my){
@@ -298,7 +298,7 @@ public class Settings extends GUI{
         public void draw(Graphics graphic){
             if (visible){
                 Graphics2D g = (Graphics2D)graphic;
-                g.setStroke(new BasicStroke(p.getFontSize(3)));
+                g.setStroke(new BasicStroke(w.getFontSize(3)));
                 if (hovering){
                     if (pressed){
                         g.setColor(Color.GRAY);

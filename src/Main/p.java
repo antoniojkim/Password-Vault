@@ -129,47 +129,5 @@ public class p {
     public static double getScreenHeight(){
         return Toolkit.getDefaultToolkit().getScreenSize().getHeight();
     }
-    public static int getFontSizeSmall(double old){
-        if (old == 0){
-            return 0;
-        }
-        return (int)(Main.w.getWindowDiagonal()/(565.685424949238/old));
-    }
-    public static int getFontSize(double old){
-        if (old == 0){
-            return 0;
-        }
-        return (int)(Main.w.getWindowDiagonal()/(1140.175425099138/old));
-    }
-    public static double getImageScale (double old){
-        if (old == 0){
-            return 0;
-        }
-        return (Main.w.getWindowDiagonal()/(1140.175425099138/old));
-    }
-    public static int convertX(double old){
-        if (old == 0){
-            return 0;
-        }
-        return (int)(Main.w.getWidth()/(900.0/old));
-    }
-    public static int convertY(double old){
-        if (old == 0){
-            return 0;
-        }
-        return (int)(Main.w.getHeight()/(600.0/old));
-    }
-    public static int convertXSmall(double old){
-        return (int)(Main.w.getHeight()/(400.0/old));
-    }
-    public static int convertYSmall(double old){
-        return (int)(Main.w.getHeight()/(400.0/old));
-    }
-    public static int convertScreenX(double old){
-        return (int)(getScreenWidth()/(1200.0/old));
-    }
-    public static int convertScreenY(double old){
-        return (int)(getScreenHeight()/(700.0/old));
-    }
     
 }

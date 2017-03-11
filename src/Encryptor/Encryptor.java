@@ -287,7 +287,7 @@ public final class Encryptor {
     }
     private void changeKeys(){
         File file = new File("./Vault Files/$6oØvE[=XW;{µR.txt");
-        boolean backup = !file.exists();
+        boolean backup = !new File("./Vault Files/Backup/").isDirectory();
         Encryptor encryptorOld = new Encryptor(false);
         PrintWriter pr = p.printwriter("./Vault Files/$6oØvE[=XW;{µR.txt");
         for (int a = 0; a<normalCharacters.length; a++){

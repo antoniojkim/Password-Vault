@@ -48,16 +48,16 @@ public class Login extends GUI implements MouseListener{
     public Login(){
         setLayout(null);
         //setBackground(new Color(00, 66, 99));
-        add(JCenterLabel(Main.w.getWidth()/2, p.convertYSmall(10), "Password Vault", p.getFontSizeSmall(40)));
-        add(JLabel(Main.w.getWidth()/2-p.stringWidth("by Antonio Kim", p.font.calibri(p.getFontSizeSmall(30)))/2, p.convertYSmall(50), "by Antonio Kim", p.getFontSizeSmall(30)));
-        int y = p.convertYSmall(110)-(p.convertYSmall(400)-Main.w.getHeight());
-        add(JLabel(Main.w.getWidth()/12, y, "Username:", p.getFontSizeSmall(25)));
-        username = JTextField(Main.w.getWidth()/9, y+p.convertYSmall(35), Main.w.getWidth()*(7.0/9.0), p.convertYSmall(30), "");
-        username.setFont(p.font.calibri(p.getFontSizeSmall(20)));
+        add(JCenterLabel(Main.w.getWidth()/2, Main.w.convertYSmall(10), "Password Vault", Main.w.getFontSizeSmall(40)));
+        add(JLabel(Main.w.getWidth()/2-p.stringWidth("by Antonio Kim", p.font.calibri(Main.w.getFontSizeSmall(30)))/2, Main.w.convertYSmall(50), "by Antonio Kim", Main.w.getFontSizeSmall(30)));
+        int y = Main.w.convertYSmall(110)-(Main.w.convertYSmall(400)-Main.w.getHeight());
+        add(JLabel(Main.w.getWidth()/12, y, "Username:", Main.w.getFontSizeSmall(25)));
+        username = JTextField(Main.w.getWidth()/9, y+Main.w.convertYSmall(35), Main.w.getWidth()*(7.0/9.0), Main.w.convertYSmall(30), "");
+        username.setFont(p.font.calibri(Main.w.getFontSizeSmall(20)));
         add(username);
-        add(JLabel(Main.w.getWidth()/12, y+p.convertYSmall(80), "Password:", p.getFontSizeSmall(25)));
-        password = JPasswordField(Main.w.getWidth()/9, y+p.convertYSmall(115), Main.w.getWidth()*(7.0/9.0), p.convertYSmall(30));
-        password.setFont(p.font.calibri(p.getFontSizeSmall(20)));
+        add(JLabel(Main.w.getWidth()/12, y+Main.w.convertYSmall(80), "Password:", Main.w.getFontSizeSmall(25)));
+        password = JPasswordField(Main.w.getWidth()/9, y+Main.w.convertYSmall(115), Main.w.getWidth()*(7.0/9.0), Main.w.convertYSmall(30));
+        password.setFont(p.font.calibri(Main.w.getFontSizeSmall(20)));
         username.addKeyListener(new KeyAdapter(){
             @Override
             public void keyPressed (KeyEvent ke){
@@ -75,8 +75,8 @@ public class Login extends GUI implements MouseListener{
             }
         });
         add(password);
-        JButton login = JButton(Main.w.getWidth()/3, y+p.convertYSmall(190), "Login", p.getFontSizeSmall(25));
-        login.setLocation(Main.w.getWidth()/2-login.getWidth()/2, y+p.convertYSmall(190));
+        JButton login = JButton(Main.w.getWidth()/3, y+Main.w.convertYSmall(190), "Login", Main.w.getFontSizeSmall(25));
+        login.setLocation(Main.w.getWidth()/2-login.getWidth()/2, y+Main.w.convertYSmall(190));
         readFiles();
         login.addActionListener((ActionEvent ae) -> {
             loginAction(username, password);
@@ -86,15 +86,13 @@ public class Login extends GUI implements MouseListener{
         JMenuItem item;
         popup.add(item = new JMenuItem("Create Account"));
         item.setHorizontalTextPosition(JMenu.RIGHT);
-        item.setFont(p.font.calibri(p.getFontSizeSmall(20)));
+        item.setFont(p.font.calibri(Main.w.getFontSizeSmall(20)));
         item.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 Main.w.dispose();
                 p.delay(150);
-                Main.w = new Window("Password Vault by Antonio Kim - Create Account", 400, 450);
-                Main.w.add(new CreateAccount(usernames));
-                Main.w.setVisible(true);
+                new CreateAccount(usernames).open();
             }
         });
 //        readSettings();
@@ -132,10 +130,8 @@ public class Login extends GUI implements MouseListener{
         if (!usernames.isEmpty() && userExists(username.getText(), password.getText())){
             Main.w.dispose();
             p.delay(150);
-            Main.w = new Window("Password Vault by Antonio Kim - Login", 900, 600);
             vault = new Vault(paths.get(usernames.indexOf(username.getText())));
-            Main.w.add(vault);
-            Main.w.setVisible(true);
+            vault.open();
         }
         else{
             JMessagePane("Could not find either the username\nor the password in the database", "Incorrect username or password", JOptionPane.ERROR_MESSAGE);
@@ -193,18 +189,18 @@ public class Login extends GUI implements MouseListener{
     
     
     private boolean hover = false;
-    private int menuLocationX = Main.w.getWidth()-p.convertScreenX(30), menuLocationY = p.convertScreenY(12.5), 
-            menuWidth = p.convertScreenX(20), menuHeight = p.convertScreenY(20), arcWidth = p.getFontSize(5);
+    private int menuLocationX = Main.w.getWidth()-Main.w.convertScreenX(30), menuLocationY = Main.w.convertScreenY(12.5), 
+            menuWidth = Main.w.convertScreenX(20), menuHeight = Main.w.convertScreenY(20), arcWidth = Main.w.getFontSize(5);
     @Override
     public void paintComponent (Graphics g){
         super.paintComponent(g);
         if (hover){
             g.setColor(Color.LIGHT_GRAY);
-            g.fillRoundRect(menuLocationX-p.convertX(2), menuLocationY-p.convertY(2), menuWidth, menuHeight, arcWidth, arcWidth);
+            g.fillRoundRect(menuLocationX-Main.w.convertX(2), menuLocationY-Main.w.convertY(2), menuWidth, menuHeight, arcWidth, arcWidth);
         }
         g.setColor(Color.DARK_GRAY);
-        g.setFont(p.font.calibri(p.getFontSize(70)));
-        g.drawString("≡", menuLocationX, menuLocationY+menuHeight-p.convertScreenY(2));
+        g.setFont(p.font.calibri(Main.w.getFontSize(70)));
+        g.drawString("≡", menuLocationX, menuLocationY+menuHeight-Main.w.convertScreenY(2));
     }
     
     
@@ -233,7 +229,7 @@ public class Login extends GUI implements MouseListener{
     public void mousePressed(MouseEvent me) {
         int mx = me.getX(), my = me.getY();
         if (hover){
-            popup.show(this, menuLocationX-p.convertXSmall(130), menuLocationY+p.convertYSmall(10));
+            popup.show(this, menuLocationX-Main.w.convertXSmall(130), menuLocationY+Main.w.convertYSmall(10));
         }
     }
     
