@@ -5,6 +5,7 @@
 */
 package Main;
 
+import Encryptor.Encryptor;
 import Vault.Vault;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -99,16 +100,16 @@ public class Login extends GUI implements MouseListener{
     }
     
     public void readSettings(){
-        String path = "./Vault Files/PDJ67O55lB95jRED7.txt";
+        String path = "./Vault Files/"+Encryptor.settingsName+Encryptor.fileFormat;
         File settings = new File(path);
         if (settings.exists()){
             BufferedReader br = p.filereader(path);
             try {
                 String line = br.readLine();
                 if (line != null){
-                    line = Main.encrpytor.decrypt(line);
+                    line = Main.encrpytor.getAdvancedDecryption(line);
                     if (!line.equals("Failed to Decrypt")){
-                        String[] lines = line.split("\\$p1l7");
+                        String[] lines = line.split(Encryptor.salt);
                         if (lines.length >= 1){
                             if (!lines[0].trim().equals("")){
                                 username.setText(lines[0].trim());
@@ -121,7 +122,7 @@ public class Login extends GUI implements MouseListener{
         }
         else{
             PrintWriter pr = p.printwriter(path);
-            pr.print(Main.encrpytor.encrypt("$p1l7$p1l7$p1l7"));
+            pr.print(Main.encrpytor.getAdvancedEncryption(Encryptor.salt+Encryptor.salt+Encryptor.salt+Encryptor.salt+Encryptor.salt));
             pr.close();
         }
     }
@@ -142,28 +143,32 @@ public class Login extends GUI implements MouseListener{
     public boolean userExists(String username, String password){
         int index = usernames.indexOf(username);
         if (index != -1){
-            if (passwords.get(index).equals(password)){
+            if (passwords.get(index).equals(Main.encrpytor.getSimpleEncryption(password))){
                 return true;
             }
+//            else{
+//                System.out.println(passwords.get(index));
+//                System.out.println(Main.encrpytor.getSimpleEncryption(password));
+//            }
         }
         return false;
     }
     
     public void readFiles(){
-        File[] files = new File("./Vault Files").listFiles();
+        String[] files = new File("./Vault Files").list();
         for (int a = 0; a<files.length; a++){
-            if (!files[a].getName().equals("PDJ67O55lB95jRED7.txt") && !files[a].getName().equals("$6oØvE[=XW;{µR.txt") &&
-                    readable(files[a].getPath())){
-                BufferedReader br = p.filereader(files[a].getPath());
+            if (files[a].endsWith(Encryptor.fileFormat) && !files[a].equals(Encryptor.settingsName+Encryptor.fileFormat) && !files[a].equals(Encryptor.keyName+Encryptor.fileFormat) &&
+                    readable("./Vault Files/"+files[a])){
+                BufferedReader br = p.filereader("./Vault Files/"+files[a]);
                 try {
                     String line = br.readLine();
                     if (line != null){
-                        line = Main.encrpytor.decrypt(line);
-                        if (!line.equals("Failed to Decrypt")){
-                            String[] entries = line.split("\\$p1l7");
+                        line = Main.encrpytor.getAdvancedDecryption(line);
+                        String[] entries = line.split(Encryptor.salt);
+                        if (entries.length == 2){
                             usernames.add(entries[0]);
-                            passwords.add(entries[1]);
-                            paths.add(files[a].getPath());
+                            passwords.add(Main.encrpytor.replaceExtra(entries[1]));
+                            paths.add("./Vault Files/"+files[a]);
                         }
                     }
                 } catch (IOException ex) { }
@@ -189,7 +194,7 @@ public class Login extends GUI implements MouseListener{
     
     
     private boolean hover = false;
-    private int menuLocationX = Main.w.getWidth()-Main.w.convertScreenX(30), menuLocationY = Main.w.convertScreenY(12.5), 
+    private int menuLocationX = Main.w.getWidth()-Main.w.convertScreenX(30), menuLocationY = Main.w.convertScreenY(12.5),
             menuWidth = Main.w.convertScreenX(20), menuHeight = Main.w.convertScreenY(20), arcWidth = Main.w.getFontSize(5);
     @Override
     public void paintComponent (Graphics g){

@@ -11,7 +11,10 @@ public class Window extends JFrame{
     public int width = convertScreenX(400), height = convertScreenY(400);
     
     public Window(){
-        super("Password Vault by Antonio Kim");
+        this("Password Vault by Antonio Kim");
+    }
+    public Window(String title){
+        super(title);
         setLayout(new BorderLayout());
         setSize(width, height);
         setLocationRelativeTo(null);

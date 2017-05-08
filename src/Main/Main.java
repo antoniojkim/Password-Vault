@@ -8,8 +8,6 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /*
 * To change this license header, choose License Headers in Project Properties.
@@ -22,10 +20,6 @@ import java.util.logging.Logger;
 * @author Antonio's Laptop
 */
 public class Main {
-    
-    /**
-    * @param args the command line arguments
-    */
     
     public static Window w = new Window();
     public static Encryptor encrpytor = new Encryptor();

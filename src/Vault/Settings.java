@@ -5,6 +5,7 @@
 */
 package Vault;
 
+import Encryptor.Encryptor;
 import Main.GUI;
 import Main.Main;
 import Main.Window;
@@ -19,7 +20,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
-import java.io.File;
 import java.io.PrintWriter;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -43,7 +43,7 @@ public class Settings extends GUI{
         String path = "./Vault Files/asdf.txt";
         if (!new File(path).exists()){
             PrintWriter pr = p.printwriter(path);
-            pr.print(Main.encrpytor.encrypt("asdf$p1l7password$p1l7false$p1l70$p1l7"));
+            pr.print(Main.encrpytor.getEncryption("asdf$p1l7password$p1l7false$p1l70$p1l7"));
             pr.close();
         }
         new Settings(new Vault(path)).Open();
@@ -65,13 +65,13 @@ public class Settings extends GUI{
     }
     
     private void addContent(){
-        int fontSize40 = (int)(w.getWindowDiagonal()/(1140.175425099138/40));
-        int fontSize45 = (int)(w.getWindowDiagonal()/(1140.175425099138/45));
-        int fontSize60 = (int)(w.getWindowDiagonal()/(1140.175425099138/60));
-        add(JLabel(w.getWidth()/2-p.stringWidth("Settings", p.font.calibri(fontSize60))/2, w.convertScreenY(5), "Settings", fontSize60));
-        add(JLabel(w.convertScreenX(20), w.convertScreenY(70), "Username:     "+vault.getUsername(),fontSize45));
-        add(JLabel(w.convertScreenX(20), w.convertScreenY(120), "Password:", fontSize45));
-        JPasswordField field = JPasswordField(w.convertScreenX(141), w.convertScreenY(125), w.convertScreenX(200), w.convertScreenY(20), fontSize45, false, false);
+        int fontSizeSmall = (int)(w.getWindowDiagonal()/(1140.175425099138/35));
+        int fontSizeMed = (int)(w.getWindowDiagonal()/(1140.175425099138/37.5));
+        int fontSizeLrg = (int)(w.getWindowDiagonal()/(1140.175425099138/60));
+        add(JLabel(w.getWidth()/2-p.stringWidth("Settings", p.font.calibri(fontSizeLrg))/2, w.convertScreenY(5), "Settings", fontSizeLrg));
+        add(JLabel(w.convertScreenX(20), w.convertScreenY(70), "Username:     "+vault.getUsername(),fontSizeMed));
+        add(JLabel(w.convertScreenX(20), w.convertScreenY(120), "Password:", fontSizeMed));
+        JPasswordField field = JPasswordField(w.convertScreenX(141), w.convertScreenY(125), w.convertScreenX(200), w.convertScreenY(20), fontSizeMed, false, false);
         field.setText(vault.getPasssword());
         field.addMouseListener(new MouseAdapter() {
             @Override
@@ -85,9 +85,9 @@ public class Settings extends GUI{
         });
         add(field);
         
-        add(JLabel(w.convertScreenX(50), w.convertScreenY(165), "New Password:", fontSize40));
-        add(JLabel(w.convertScreenX(238), w.convertScreenY(166), "_____________________", fontSize40));
-        JPasswordField newPassword = JPasswordField(w.convertScreenX(240), w.convertScreenY(166), w.convertScreenX(200), w.convertScreenY(20), fontSize45, true, true);
+        add(JLabel(w.convertScreenX(50), w.convertScreenY(165), "New Password:", fontSizeSmall));
+        add(JLabel(w.convertScreenX(238), w.convertScreenY(166), "_____________________", fontSizeSmall));
+        JPasswordField newPassword = JPasswordField(w.convertScreenX(240), w.convertScreenY(161), w.convertScreenX(200), w.convertScreenY(25), fontSizeMed, true, true);
         newPassword.setText("");
         newPassword.addMouseListener(new MouseAdapter() {
             @Override
@@ -100,9 +100,9 @@ public class Settings extends GUI{
             }
         });
         add(newPassword);
-        add(JLabel(w.convertScreenX(50), w.convertScreenY(205), "Confirm Password:", fontSize40));
-        add(JLabel(w.convertScreenX(238), w.convertScreenY(206), "_____________________", fontSize40));
-        JPasswordField confirmPassword = JPasswordField(w.convertScreenX(240), w.convertScreenY(206), w.convertScreenX(200), w.convertScreenY(20), fontSize45, true, true);
+        add(JLabel(w.convertScreenX(50), w.convertScreenY(205), "Confirm Password:", fontSizeSmall));
+        add(JLabel(w.convertScreenX(238), w.convertScreenY(206), "_____________________", fontSizeSmall));
+        JPasswordField confirmPassword = JPasswordField(w.convertScreenX(240), w.convertScreenY(201), w.convertScreenX(200), w.convertScreenY(25), fontSizeMed, true, true);
         confirmPassword.setText("");
         confirmPassword.addMouseListener(new MouseAdapter() {
             @Override
@@ -115,7 +115,7 @@ public class Settings extends GUI{
             }
         });
         add(confirmPassword);
-        JTextArea instructions = JTextArea(w.convertScreenX(240), w.convertScreenY(240), w.convertScreenX(300), w.convertScreenY(20), fontSize40, true, false);
+        JTextArea instructions = JTextArea(w.convertScreenX(240), w.convertScreenY(240), w.convertScreenX(300), w.convertScreenY(20), fontSizeSmall, true, false);
         instructions.setText("");
         add(instructions);
         KeyAdapter key = new KeyAdapter() {
@@ -189,8 +189,8 @@ public class Settings extends GUI{
                     defaultFavourite.release();
                 }
                 else if (defaultUsername.isPressed()){
-                    PrintWriter pr = p.printwriter("./Vault Files/PDJ67O55lB95jRED7.txt");
-                    pr.print(Main.encrpytor.encrypt(vault.getUsername()+"$p1l7$p1l7$p1l7"));
+                    PrintWriter pr = p.printwriter("./Vault Files/"+Encryptor.settingsName+Encryptor.fileFormat);
+                    pr.print(Main.encrpytor.getAdvancedEncryption(vault.getUsername()+Encryptor.salt+Encryptor.salt+Encryptor.salt+Encryptor.salt));
                     pr.close();
                     defaultUsername.release();
                 }

@@ -5,6 +5,7 @@
 */
 package Vault;
 
+import Encryptor.Encryptor;
 import Main.GUI;
 import Main.Main;
 import Main.Window;
@@ -337,21 +338,20 @@ public class Vault extends GUI{
     private void readFile(String path){
         BufferedReader br = p.filereader(path);
         try {
-            String decrypted = Main.encrpytor.decrypt(br.readLine());
-            String[] lines = decrypted.split("\\$p1l7");
+            String decrypted = Main.encrpytor.getAdvancedDecryption(br.readLine());
+            String[] lines = decrypted.split(Encryptor.salt);
             username = lines[0];
-            password = lines[1];
-            if (lines[2].equals("false")){
+            password = Main.encrpytor.getSimpleDecryption(lines[1]);
+            decrypted = Main.encrpytor.getAdvancedDecryption(br.readLine());
+            lines = decrypted.split(Encryptor.salt);
+            if (lines[0].equals("false")){
                 defaultShowFavourite = false;
             }
             else{
                 defaultShowFavourite = true;
             }
-            int numEntries = Integer.parseInt(lines[3]);
-            if (debug){
-                System.out.println(numEntries);
-            }
-            int lineNumber = 4;
+            int numEntries = Integer.parseInt(lines[1]);
+            int lineNumber = 2;
             for (int a = 0; a<numEntries; a++){
                 Entry entry = new Entry(lines[lineNumber]);
                 lineNumber++;
@@ -377,27 +377,21 @@ public class Vault extends GUI{
     
     public void print(){
         String encrypted = "";
-        encrypted += username+"$p1l7";
-        encrypted += password+"$p1l7";
-        encrypted += defaultShowFavourite+"$p1l7";
-        encrypted += entries.size()+"$p1l7";
+        encrypted += defaultShowFavourite+Encryptor.salt;
+        encrypted += entries.size()+Encryptor.salt;
         for (int a = 0; a<entries.size(); a++){
-            encrypted += entries.get(a).title+"$p1l7";
-            encrypted += entries.get(a).favourite+"$p1l7";
-            encrypted += entries.get(a).fieldTitles.size()+"$p1l7";
+            encrypted += entries.get(a).title+Encryptor.salt;
+            encrypted += entries.get(a).favourite+Encryptor.salt;
+            encrypted += entries.get(a).fieldTitles.size()+Encryptor.salt;
             for (int b = 0; b<entries.get(a).fieldTitles.size(); b++){
-                encrypted += entries.get(a).fieldTitles.get(b)+"$p1l7";
-                encrypted += entries.get(a).fieldData.get(b)+"$p1l7";
+                encrypted += entries.get(a).fieldTitles.get(b)+Encryptor.salt;
+                encrypted += entries.get(a).fieldData.get(b)+Encryptor.salt;
             }
         }
         PrintWriter pr = p.printwriter(path);
-        pr.print(Main.encrpytor.encrypt(encrypted));
+        pr.println(Main.encrpytor.getAdvancedEncryption(username+Encryptor.salt+Main.encrpytor.getSimpleEncryption(password)));
+        pr.println(Main.encrpytor.getAdvancedEncryption(encrypted));
         pr.close();
-        if (debug){
-            System.out.println(username);
-            System.out.println(password);
-            System.out.println(entries.size());
-        }
     }
     
     public void toggleEditting(){

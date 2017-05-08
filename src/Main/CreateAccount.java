@@ -8,6 +8,7 @@ package Main;
 import Vault.Vault;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,12 +56,19 @@ public class CreateAccount extends GUI{
                 if (!username.getText().equals("") && !password.getText().equals("")){
                     Main.w.dispose();
                     p.delay(150);
-                    String file = Main.encrpytor.createFilename(username.getText().trim());
+                    String[] fileList = new File("./Vault Files").list();
+                    String file = Main.encrpytor.generateRandom(10);
+                    for (int a = 0; a<fileList.length; a++){
+                        if (fileList[a].equals(file)){
+                            file = Main.encrpytor.generateRandom(10);
+                            a = -1;
+                        }
+                    }
                     if (file.equals("")){
                         file = username.getText();
                     }
                     PrintWriter pr = p.printwriter("./Vault Files/"+file+".txt");
-                    pr.print(Main.encrpytor.encrypt(username.getText()+"$p1l7"+password.getText()+"$p1l70$p1l7"));
+                    pr.print(Main.encrpytor.getEncryption(username.getText()+"$p1l7"+password.getText()+"$p1l70$p1l7"));
                     pr.close();
                     Main.login.vault = new Vault("./Vault Files/"+file+".txt");
                     Main.login.vault.open();
