@@ -23,6 +23,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -96,6 +97,32 @@ public class Login extends GUI implements MouseListener{
                 new CreateAccount(usernames).open();
             }
         });
+        popup.add(item = new JMenuItem("Encrypt Data File"));
+        item.setHorizontalTextPosition(JMenu.RIGHT);
+        item.setFont(p.font.calibri(Main.w.getFontSizeSmall(20)));
+        item.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                JFileChooser selector = new JFileChooser("./Vault Files/");
+                selector.showDialog(Main.login, "Select");
+                File file = selector.getSelectedFile();
+                if (file != null && file.getName().contains("Unencrypted")){
+                    try{
+                        BufferedReader br = p.filereader(file.getAbsolutePath());
+                        String[] userPass = br.readLine().split(Encryptor.salt);
+                        String data = br.readLine();
+                        
+                        String encryptedUserPass = Main.encrpytor.getAdvancedEncryption(userPass[0]+Encryptor.salt+Main.encrpytor.getSimpleEncryption(userPass[1]));    
+                        String encryptedData = Main.encrpytor.getAdvancedEncryption(data);                        
+                        
+                        PrintWriter pr = p.printwriter("./Vault Files/"+Main.encrpytor.getSimpleEncryption(userPass[0])+Encryptor.fileFormat);
+                        pr.println(encryptedUserPass);
+                        pr.println(encryptedData);
+                        pr.close();
+                    }catch(IOException e){}catch(ArrayIndexOutOfBoundsException e){}
+                }
+            }
+        });
 //        readSettings();
     }
     
@@ -146,10 +173,18 @@ public class Login extends GUI implements MouseListener{
             if (passwords.get(index).equals(Main.encrpytor.getSimpleEncryption(password))){
                 return true;
             }
-//            else{
-//                System.out.println(passwords.get(index));
-//                System.out.println(Main.encrpytor.getSimpleEncryption(password));
-//            }
+            else{
+                System.out.println(passwords.get(index));
+                System.out.println(Main.encrpytor.getSimpleEncryption(password));
+            }
+        }
+        else{
+            for (String str : usernames){
+                System.out.println(str);
+            }
+            System.out.println("");
+            System.out.println(passwords.get(index));
+            System.out.println(Main.encrpytor.getSimpleEncryption(password));
         }
         return false;
     }
@@ -177,6 +212,9 @@ public class Login extends GUI implements MouseListener{
 //                System.out.println("Not readable");
 //                System.out.println(files[a].getPath());
 //            }
+        }
+        if (usernames.isEmpty()){
+            System.out.println("No Users Found");
         }
     }
     

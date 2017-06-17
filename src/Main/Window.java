@@ -11,7 +11,7 @@ public class Window extends JFrame{
     public int width = convertScreenX(400), height = convertScreenY(400);
     
     public Window(){
-        this("Password Vault by Antonio Kim");
+        this("Password Vault by Antonio Kim V3");
     }
     public Window(String title){
         super(title);
@@ -28,7 +28,7 @@ public class Window extends JFrame{
         setResizable(false);
     }
     public Window(double sizeX, double sizeY){
-        super("Password Vault by Antonio Kim");
+        super("Password Vault by Antonio Kim V3");
         setLayout(new BorderLayout());
         setSize((int)convertScreenX(sizeX), (int)convertScreenY(sizeY));
         setLocationRelativeTo(null);

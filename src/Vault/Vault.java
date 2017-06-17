@@ -376,6 +376,12 @@ public class Vault extends GUI{
     }
     
     public void print(){
+        PrintWriter pr = p.printwriter(path);
+        pr.println(Main.encrpytor.getAdvancedEncryption(username+Encryptor.salt+Main.encrpytor.getSimpleEncryption(password)));
+        pr.println(Main.encrpytor.getAdvancedEncryption(getData()));
+        pr.close();
+    }
+    public String getData(){
         String encrypted = "";
         encrypted += defaultShowFavourite+Encryptor.salt;
         encrypted += entries.size()+Encryptor.salt;
@@ -388,10 +394,7 @@ public class Vault extends GUI{
                 encrypted += entries.get(a).fieldData.get(b)+Encryptor.salt;
             }
         }
-        PrintWriter pr = p.printwriter(path);
-        pr.println(Main.encrpytor.getAdvancedEncryption(username+Encryptor.salt+Main.encrpytor.getSimpleEncryption(password)));
-        pr.println(Main.encrpytor.getAdvancedEncryption(encrypted));
-        pr.close();
+        return encrypted;
     }
     
     public void toggleEditting(){
@@ -650,7 +653,7 @@ public class Vault extends GUI{
     public String getUsername(){
         return username;
     }
-    public String getPasssword(){
+    public String getPassword(){
         return password;
     }
     public void setPassword(String newPassword){

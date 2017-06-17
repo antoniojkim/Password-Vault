@@ -24,74 +24,93 @@ import java.util.logging.Logger;
 
 /**
 
-@author Antonio
-*/
+ @author Antonio
+ */
 public final class Encryptor {
-    
+
     public static final String keyName = "ΞYΟlρLαβzX";
     public static final String settingsName = "-$aCνjVehE";
     public static final String salt = "σΣ#~5";
-    public static final String backupEnd = "-$aCνjVehE";
+    public static final String backupEnd = "zβ2yΡΛp";
     public static final String fileFormat = ".txt";
-    
+    public static final String defaultKey = "Key";
+    public static final String publicKeyName = "Pε[μjlju-Ρ";
+    public static final String privateKey = "Private Key";
+
     public Encryptor(){
         open(true);
     }
     public Encryptor(boolean extra){
         open(extra);
     }
-    
+    public Encryptor(String path){
+        loadKey(p.filereader(path));
+    }
+    public Encryptor(BufferedReader br){
+        loadKey(br);
+    }
+
     private boolean opened = false;
-    
+
     private String[] characters;
-    
+
     private String[][] cipher;
-    
+
+    private String publicKey = "";
+
     private BufferedReader br;
-    private void open(boolean extra){
+    private void open(boolean useDefaultKey){
         if (!opened){
-//            File file = new File("./Vault Files/"+keyName+fileFormat);
-//            if (file.exists()){
-if (extra){
-    try{
-        br = new BufferedReader (new FileReader("./Vault Files/"+keyName+fileFormat));
-        if (br.readLine() == null){
-            br = new BufferedReader (new InputStreamReader(getClass().getResourceAsStream("keys"+fileFormat), "UTF-8"));
-        }
-        else{
-            br = new BufferedReader (new FileReader("./Vault Files/"+keyName+fileFormat));
-        }
-    }catch(FileNotFoundException e){
-        try {
-            br = new BufferedReader (new InputStreamReader(getClass().getResourceAsStream("keys"+fileFormat), "UTF-8"));
-        } catch (UnsupportedEncodingException ex) {}
-    } catch (IOException ex) {
-        try {
-            br = new BufferedReader (new InputStreamReader(getClass().getResourceAsStream("keys"+fileFormat), "UTF-8"));
-        } catch (UnsupportedEncodingException ex1) {}
-    }
-}
-else{
-    br = new BufferedReader (new InputStreamReader(getClass().getResourceAsStream("keys"+fileFormat)));
-}
-try{
-    List<String> lines = new ArrayList<>();
-    String line = br.readLine();
-    while (line != null){
-        lines.add(line.replaceAll("\uFFFD", "").replaceAll(" ", ""));
-        line = br.readLine();
-    }
-    characters = lines.get(0).split("");
-    cipher = new String[characters.length][characters.length];
-    for (int a = 1; a<lines.size(); a++){
-        cipher[a-1] = lines.get(a).split("");
-    }
-    opened = true;
-}catch(IOException e){}
+            //            File file = new File("./Vault Files/"+keyName+fileFormat);
+            //            if (file.exists()){
+            if (!useDefaultKey){
+                try{
+                    br = new BufferedReader (new FileReader("./Vault Files/"+keyName+fileFormat));
+                    if (br.readLine() == null){
+                        br = new BufferedReader (new InputStreamReader(getClass().getResourceAsStream(defaultKey+fileFormat), "UTF-8"));
+                    }
+                    else{
+                        br = new BufferedReader (new FileReader("./Vault Files/"+keyName+fileFormat));
+                    }
+                }catch(FileNotFoundException e){
+                    try {
+                        br = new BufferedReader (new InputStreamReader(getClass().getResourceAsStream(defaultKey+fileFormat), "UTF-8"));
+                    } catch (UnsupportedEncodingException ex) {}
+                } catch (IOException ex) {
+                    try {
+                        br = new BufferedReader (new InputStreamReader(getClass().getResourceAsStream(defaultKey+fileFormat), "UTF-8"));
+                    } catch (UnsupportedEncodingException ex1) {}
+                }
+            }
+            else{
+                try {
+                    br = new BufferedReader (new InputStreamReader(getClass().getResourceAsStream(defaultKey+fileFormat), "UTF-8"));
+                } catch (UnsupportedEncodingException ex) {
+                    System.out.println("Failed to Read Default Key");
+                    System.exit(1);
+                }
+            }
+            loadKey(br);
 //            }
         }
     }
-    
+    private void loadKey(BufferedReader br){
+        try{
+            List<String> lines = new ArrayList<>();
+            String line = br.readLine();
+            while (line != null){
+                lines.add(line.replaceAll("\uFFFD", "").replaceAll(" ", ""));
+                line = br.readLine();
+            }
+            characters = lines.get(0).split("");
+            cipher = new String[characters.length][characters.length];
+            for (int a = 1; a<lines.size(); a++){
+                cipher[a-1] = lines.get(a).split("");
+            }
+            opened = true;
+        }catch(IOException e){}
+    }
+
     public String getEncryption(String str){
         return encrypt(replaceExtra(str));
     }
@@ -177,7 +196,7 @@ try{
         }
         return "Failed to Encrypt - "+str;
     }
-    
+
     public String getDecryption(String str){
         return returnNormal(decrypt(replaceExtra(str)));
     }
@@ -250,7 +269,7 @@ try{
         }
         return "Failed to Decrypt";
     }
-    
+
     private String hash(String str){
         if (!opened){
             open(true);
@@ -279,8 +298,10 @@ try{
             String str = "";
             List<String> list = new ArrayList<>(Arrays.asList(characters));
             for (int a = 0; a<hash.length(); a++){
+                int mod = a%list.size();
+                String c = hash.substring(a, a+1);
                 for (int b = 0; b<cipher.length; b++){
-                    if (cipher[a%list.size()][b].equals(hash.substring(a, a+1))){
+                    if (cipher[mod][b].equals(c)){
                         str += list.get(b);
                         break;
                     }
@@ -290,8 +311,8 @@ try{
         }
         return "Could not Unhash - "+hash;
     }
-    
-    final private String[] forbidden = {"\"", "*", "/", ":", "<", ">", "?", "\\", "|"};
+
+    final private String[] forbidden = {"\"", "#", "*", "/", ":", "<", ">", "?", "\\", "|"};
     public String generateRandom(int size){
         String encrypted = "";
         while(encrypted.length() < size){
@@ -302,7 +323,7 @@ try{
         }
         return encrypted;
     }
-    
+
     public void resetDefault(){
         File file = new File("./Vault Files/"+keyName+fileFormat);
         if (file.exists()){
@@ -368,10 +389,12 @@ try{
     private void changeKeys(){
         Encryptor encryptorOld = new Encryptor(false);
         boolean backup = !new File("./Vault Files/"+keyName+fileFormat).exists();
-        generateKey("./Vault Files/"+keyName+fileFormat);
+        generatePrivateKey("./Vault Files/"+keyName+fileFormat);
         Encryptor encryptorNew = new Encryptor();
         File file = new File("./Vault Files");
         String[] fileList = file.list();
+        file = new File("./Vault Files/Backup/");
+        file.mkdirs();
         for (int a = 0; a<fileList.length; a++){
             if (fileList[a].endsWith(fileFormat) && !fileList[a].equals(""+keyName+fileFormat)){
                 try{
@@ -380,14 +403,11 @@ try{
                     String data = br.readLine();
                     br.close();
                     if (backup){
-                        file = new File("./Vault Files/Backup/");
-                        file.mkdirs();
-                        PrintWriter pr1 = p.printwriter("./Vault Files/Backup/"+fileList[a].substring(0, fileList[a].length()-4)+"9οΗΑΥ∀ςΖλθ"+fileFormat);
+                        PrintWriter pr1 = p.printwriter("./Vault Files/Backup/"+fileList[a].substring(0, fileList[a].length()-4)+backupEnd+fileFormat);
                         pr1.println(login);
-                        if (data != null){
+                        if (!fileList[a].equals(""+settingsName+fileFormat)){
                             pr1.println(data);
                         }
-                        pr1.println(data);
                         pr1.close();
                     }
                     PrintWriter pr2 = p.printwriter("./Vault Files/"+fileList[a]);
@@ -400,7 +420,7 @@ try{
                     }
                     login = encryptorNew.getAdvancedEncryption(login);
                     pr2.println(login);
-                    if (data != null){
+                    if (!fileList[a].equals(""+settingsName+fileFormat)){
                         data = encryptorOld.getAdvancedDecryption(data);
                         data = encryptorNew.getAdvancedEncryption(data);
                         pr2.println(data);
@@ -410,15 +430,13 @@ try{
             }
         }
     }
-    public void generateKey(String path, String... additional){
+    public void generateRandomKey(String path, String... additional){
         try {
             String line = new BufferedReader (new InputStreamReader(getClass().getResourceAsStream("All Characters"+fileFormat), "UTF-8")).readLine().replaceAll("\u00E4", "");
             if (!line.substring(0, 1).equals("a")){
                 line = line.substring(1);
             }
             String[] characters = line.split("");
-            System.out.println(characters.length);
-            System.out.println(line);
             PrintWriter pr = p.printwriter(path);
             List<String> list = new ArrayList<>();
             for (int a = -1; a<characters.length; a++){
@@ -426,13 +444,93 @@ try{
                 list.addAll(Arrays.asList(additional));
                 while(!list.isEmpty()){
                     int r = p.randomint(0, list.size()-1);
-                    pr.print(list.get(r));
-                    list.remove(r);
+                    pr.print(list.remove(r));
                 }
                 pr.println();
             }
             pr.close();
         } catch (IOException ex) {}
+    }
+    public void generatePrivateKey(String path, String... additional){
+        try {
+            String line = new BufferedReader (new InputStreamReader(getClass().getResourceAsStream("All Characters"+fileFormat), "UTF-8")).readLine().replaceAll("\u00E4", "");
+            if (!line.substring(0, 1).equals("a")){
+                line = line.substring(1);
+            }
+            String[] characters = line.split("");
+            List<String> list = new ArrayList<>();
+            list.addAll(Arrays.asList(characters));
+            list.addAll(Arrays.asList(additional));
+            List<String> key = new ArrayList<>();
+            while (!list.isEmpty()){
+                int r = p.randomint(0, list.size()-1);
+                key.add(list.get(r));
+                list.remove(r);
+            }
+            list.addAll(Arrays.asList(characters));
+            list.addAll(Arrays.asList(additional));
+            List<String> row = new ArrayList<>();
+            while (!list.isEmpty()){
+                int r = p.randomint(0, list.size()-1);
+                row.add(list.get(r));
+                list.remove(r);
+            }
+            List<List<String>> table = new ArrayList<>();
+            for (int a = 0; a<row.size(); a++){
+                List<String> temp = new ArrayList<>();
+                for (int b = row.size()-a; b<row.size(); b++){
+                    temp.add(row.get(b));
+                }
+                for (int b = 0; b<(row.size()-a); b++){
+                    temp.add(row.get(b));
+                }
+                table.add(temp);
+            }
+            List<List<String>> temp = new ArrayList<>();
+            temp.addAll(table);
+            table.clear();
+            while (!temp.isEmpty()){
+                int r = p.randomint(0, temp.size()-1);
+                table.add(temp.get(r));
+                temp.remove(r);
+            }
+
+            PrintWriter pr = p.printwriter(path);
+            for (int a = 0; a<key.size(); a++){
+                pr.print(key.get(a));
+            }
+            pr.println();
+            for (int a = 0; a<table.size(); a++){
+                for (int b = 0; b<table.get(a).size(); b++){
+                    pr.print(table.get(a).get(b));
+                }
+                pr.println();
+            }
+            pr.close();
+        } catch (IOException ex) {}
+    }
+    public String getPublicKey(){
+        if (this.publicKey.equals("")){
+            try{
+                BufferedReader br = new BufferedReader (new InputStreamReader(getClass().getResourceAsStream(privateKey+fileFormat), "UTF-8"));
+                String line = br.readLine();
+                while (line != null){
+                    publicKey += hash(line)+"\n";
+                    line = br.readLine();
+                }
+            }catch(IOException e){
+                publicKey = "";
+            }
+        }
+        return this.publicKey;
+    }
+    public void printPublicKey(String path){
+        PrintWriter pr = p.printwriter(path);
+        String[] publicKey = getPublicKey().split("\n");
+        for (String key : publicKey){
+            pr.println(key);
+        }
+        pr.close();
     }
     public String createSalt(int size){
         String salt = "";
@@ -446,6 +544,51 @@ try{
         }
         return salt;
     }
-    
-    
+
+         /*
+    public static void main (String[] args){
+        Encryptor encrypt = new Encryptor();
+//        String str = "password";
+//        System.out.println(str);
+//        System.out.println(encrypt.hash(str));
+//        System.out.println(encrypt.unhash(encrypt.hash(str)));
+
+//        encrypt.generateRandomKey("./Extra Files/Key.txt");
+//        encrypt.generatePrivateKey("./Extra Files/Private Key 1.txt", args);
+//        encrypt.generatePrivateKey("./Extra Files/Private Key 2.txt", args);
+//encrypt.printPublicKey("./Extra Files/Public Key.txt");
+//                encrypt.reset();
+//encrypt.generatePrivateKey("./src/Encryptor/keys"+fileFormat);
+//encrypt = new Encryptor();
+//System.out.println(encrypt.characters.length);
+//        System.out.println(encrypt.characters.length);
+//for (int a = 0; a<10; a++){
+//    System.out.println(encrypt.generateRandom(10));
+//}
+        try {
+            BufferedReader br = p.filereader("./Extra Files/Unencrypted antoniok.txt");
+            //            System.out.println(encrypt.getAdvancedDecryption(br.readLine()));
+            //            System.out.println(encrypt.getAdvancedDecryption(br.readLine()));
+            String[] login = br.readLine().split(salt);
+            String data = br.readLine();
+            new File("./Vault Files").mkdir();
+            PrintWriter pr = p.printwriter("./Vault Files/aϑγa2Δκεh1"+fileFormat);
+            System.out.println(login[0]);
+            System.out.println(login[1]);
+            System.out.println(data);
+            pr.println(encrypt.getAdvancedEncryption(login[0]+salt+encrypt.getSimpleEncryption(login[1])));
+            pr.println(encrypt.getAdvancedEncryption(data));
+            pr.close();
+        } catch (IOException ex) {}
+
+    }
+    private static void print(String str){
+        for (int a = 0; a<str.length(); a++){
+            System.out.print(str.substring(a, a+1)+"  ");
+        }
+        System.out.println("");
+    }
+    /*
+    */
+
 }

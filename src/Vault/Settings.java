@@ -35,18 +35,18 @@ public class Settings extends GUI{
     
     private Vault vault;
     private Window w;
-    private Button defaultFavourite, defaultUsername, resetKey, defaultKey;
+    private Button defaultFavourite, defaultUsername, exportRaw, resetKey, defaultKey;
     
     
     /*
     public static void main (String[] args){
-        String path = "./Vault Files/asdf.txt";
-        if (!new File(path).exists()){
-            PrintWriter pr = p.printwriter(path);
-            pr.print(Main.encrpytor.getEncryption("asdf$p1l7password$p1l7false$p1l70$p1l7"));
-            pr.close();
-        }
-        new Settings(new Vault(path)).Open();
+    String path = "./Vault Files/asdf.txt";
+    if (!new File(path).exists()){
+    PrintWriter pr = p.printwriter(path);
+    pr.print(Main.encrpytor.getEncryption("asdf$p1l7password$p1l7false$p1l70$p1l7"));
+    pr.close();
+    }
+    new Settings(new Vault(path)).Open();
     }
     /*
     */
@@ -56,7 +56,7 @@ public class Settings extends GUI{
     }
     
     public void Open(){
-        w = new Window("Password Vault by Antonio Kim - Settings", 500, 500);
+        w = new Window("Password Vault by Antonio Kim - Settings", 500, 550);
         w.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(null);
         addContent();
@@ -72,7 +72,7 @@ public class Settings extends GUI{
         add(JLabel(w.convertScreenX(20), w.convertScreenY(70), "Username:     "+vault.getUsername(),fontSizeMed));
         add(JLabel(w.convertScreenX(20), w.convertScreenY(120), "Password:", fontSizeMed));
         JPasswordField field = JPasswordField(w.convertScreenX(141), w.convertScreenY(125), w.convertScreenX(200), w.convertScreenY(20), fontSizeMed, false, false);
-        field.setText(vault.getPasssword());
+        field.setText(vault.getPassword());
         field.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent me){
@@ -115,7 +115,7 @@ public class Settings extends GUI{
             }
         });
         add(confirmPassword);
-        JTextArea instructions = JTextArea(w.convertScreenX(240), w.convertScreenY(240), w.convertScreenX(300), w.convertScreenY(20), fontSizeSmall, true, false);
+        JTextArea instructions = JTextArea(w.convertScreenX(240), w.convertScreenY(240), w.convertScreenX(300), w.convertScreenY(30), fontSizeSmall, true, false);
         instructions.setText("");
         add(instructions);
         KeyAdapter key = new KeyAdapter() {
@@ -155,13 +155,15 @@ public class Settings extends GUI{
         newPassword.addKeyListener(key);
         confirmPassword.addKeyListener(key);
         
-        defaultFavourite = new Button(20, 295, 20, "Set Favourite as Default Tab", 40);
+        int y = 300;
+        defaultFavourite = new Button(20, y, 20, "Set Favourite as Default Tab", 40);
         if (vault.getdefaultShowFavourite()){
             defaultFavourite.setText("Unset Favourite as Default Tab");
         }
-        defaultUsername = new Button(20, 340, 20, "Set this User as Default User", 40);
-        resetKey = new Button(20, 385, 20, "Reset Encryption Key", 40);
-        defaultKey = new Button(20, 430, 20, "Revert to Default Encryption Key", 40);
+        defaultUsername = new Button(20, y+45, 20, "Set this User as Default User", 40);
+        exportRaw = new Button(20, y+90, 20, "Export Unencrypted Data", 40);
+        resetKey = new Button(20, y+135, 20, "Reset Encryption Key", 40);
+        defaultKey = new Button(20, y+180, 20, "Revert to Default Encryption Key", 40);
         repaint();
         addMouseListener(new MouseAdapter() {
             @Override
@@ -169,6 +171,7 @@ public class Settings extends GUI{
                 int mx = me.getX(), my = me.getY();
                 defaultFavourite.press(mx, my);
                 defaultUsername.press(mx, my);
+                exportRaw.press(mx, my);
                 resetKey.press(mx, my);
                 defaultKey.press(mx, my);
                 repaint();
@@ -194,6 +197,12 @@ public class Settings extends GUI{
                     pr.close();
                     defaultUsername.release();
                 }
+                else if (exportRaw.isPressed()){
+                    PrintWriter pr = p.printwriter("./Vault Files/Unencrypted "+vault.getUsername()+".txt");
+                    pr.println(vault.getUsername()+Encryptor.salt+vault.getPassword());
+                    pr.println(vault.getData());
+                    pr.close();
+                }
                 else if (resetKey.isPressed()){
                     Main.encrpytor.reset();
                     resetKey.release();
@@ -211,6 +220,7 @@ public class Settings extends GUI{
                 int mx = me.getX(), my = me.getY();
                 defaultFavourite.hover(mx, my);
                 defaultUsername.hover(mx, my);
+                exportRaw.hover(mx, my);
                 resetKey.hover(mx, my);
                 defaultKey.hover(mx, my);
                 repaint();
@@ -226,6 +236,9 @@ public class Settings extends GUI{
         }
         if (defaultUsername != null){
             defaultUsername.draw(g);
+        }
+        if (exportRaw != null){
+            exportRaw.draw(g);
         }
         if (resetKey != null){
             resetKey.draw(g);

@@ -5,6 +5,7 @@
 */
 package Main;
 
+import Encryptor.Encryptor;
 import Vault.Vault;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -48,36 +49,45 @@ public class CreateAccount extends GUI{
         JTextField password = JTextField(w.getWidth()/9, y+w.convertYSmall(115), w.getWidth()*(7.0/9.0), w.convertYSmall(30), "");
         password.setFont(p.font.calibri(w.getFontSizeSmall(25)));
         add(password);
-        add(JCenterLabel(Main.w.getWidth()/2, w.getHeight()-w.convertScreenY(60), "Press Enter to Create Account", w.getFontSize(45)));
+        JLabel instructions = JCenterLabel(Main.w.getWidth()/2, w.getHeight()-w.convertScreenY(60), "Press Enter to Create Account", w.getFontSize(45));
+        add(instructions);
         
         KeyAdapter key = new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent ke){
-                if (!username.getText().equals("") && !password.getText().equals("")){
-                    Main.w.dispose();
-                    p.delay(150);
-                    String[] fileList = new File("./Vault Files").list();
-                    String file = Main.encrpytor.generateRandom(10);
-                    for (int a = 0; a<fileList.length; a++){
-                        if (fileList[a].equals(file)){
-                            file = Main.encrpytor.generateRandom(10);
-                            a = -1;
+                if (ke.getKeyCode() == KeyEvent.VK_ENTER){
+                    if (!username.getText().equals("") && !password.getText().equals("")){
+                        w.dispose();
+                        p.delay(150);
+                        String[] fileList = new File("./Vault Files").list();
+                        String file = Main.encrpytor.getSimpleEncryption(username.getText())+Main.encrpytor.generateRandom(Math.max(10-username.getText().length(), 0));
+                        for (int a = 0; a<fileList.length; a++){
+                            if (fileList[a].equals(file)){
+                                instructions.setText("Username already Exists!");
+                                return;
+                            }
                         }
+                        PrintWriter pr = p.printwriter("./Vault Files/"+file+Encryptor.fileFormat);
+                        pr.println(Main.encrpytor.getAdvancedEncryption(username.getText()+Encryptor.salt+Main.encrpytor.getSimpleEncryption(password.getText())));
+                        pr.println(Main.encrpytor.getAdvancedEncryption("false"+Encryptor.salt+"0"+Encryptor.salt));
+                        pr.close();
+                        Main.login.vault = new Vault("./Vault Files/"+file+".txt");
+                        Main.login.vault.open();
                     }
-                    if (file.equals("")){
-                        file = username.getText();
+                    else if (username.getText().equals("") || password.getText().equals("")){
+                        instructions.setText("Fields cannot be Blank");
                     }
-                    PrintWriter pr = p.printwriter("./Vault Files/"+file+".txt");
-                    pr.print(Main.encrpytor.getEncryption(username.getText()+"$p1l7"+password.getText()+"$p1l70$p1l7"));
-                    pr.close();
-                    Main.login.vault = new Vault("./Vault Files/"+file+".txt");
-                    Main.login.vault.open();
+                }
+                else if (username.getText().equals("") || password.getText().equals("")){
+                    instructions.setText("Fields cannot be Blank");
                 }
                 else{
-                    JMessagePane("None of the above fields can be left blank", "Invalid Entry", JOptionPane.ERROR_MESSAGE);
+                    instructions.setText("Press Enter to Create Account");
                 }
             }
         };
+        username.addKeyListener(key);
+        password.addKeyListener(key);
     }
     
 }
