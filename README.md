@@ -7,12 +7,12 @@ The interface is quite simple. All the icons are clean, simple and are intuitive
 
 Login Screen:
 
-![alt text](https://github.com/antoniok9130/Password-Vault/blob/master/Images/Login%20Screen.PNG "Login Screen")
+![](https://github.com/antoniok9130/Password-Vault/blob/master/Images/Login%20Screen.PNG =100x)
 
 Create Account Screen:
 
-![alt text](https://github.com/antoniok9130/Password-Vault/blob/master/Images/Create%20Account%20Screen.PNG "Create Account Screen")
+![](https://github.com/antoniok9130/Password-Vault/blob/master/Images/Create%20Account%20Screen.PNG )
 
 Vault Interface:
 
-![alt text](https://github.com/antoniok9130/Password-Vault/blob/master/Images/Vault%20Interface%20Blurred.PNG "Vault Interface")
+![](https://github.com/antoniok9130/Password-Vault/blob/master/Images/Vault%20Interface%20Blurred.PNG )
